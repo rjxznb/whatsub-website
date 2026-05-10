@@ -1,8 +1,6 @@
 import { Nav } from '@/components/Nav';
-import { Hero } from '@/components/Hero';
-import { WhyCards } from '@/components/WhyCards';
-import { HowSteps } from '@/components/HowSteps';
-import { FeatureGrid } from '@/components/FeatureGrid';
+import { HeroSlim } from '@/components/HeroSlim';
+import { DemoDiagonal } from '@/components/DemoDiagonal';
 import { Download } from '@/components/Download';
 import { Pricing } from '@/components/Pricing';
 import { FAQ } from '@/components/FAQ';
@@ -13,10 +11,8 @@ export default function HomePage() {
     <>
       <Nav />
       <main>
-        <Hero />
-        <WhyCards />
-        <HowSteps />
-        <FeatureGrid />
+        <HeroSlim />
+        <DemoDiagonal />
         <Download />
         <Pricing />
         <FAQ />

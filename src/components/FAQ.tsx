@@ -47,7 +47,7 @@ export function FAQ() {
     >
       <div className="mx-auto max-w-[900px]">
         <h2
-          className="reveal mb-14 font-display font-bold leading-[1.05] tracking-[-0.01em] text-ink"
+          className="reveal mb-14 font-bold leading-[1.05] tracking-[-0.01em] text-ink"
           style={{ fontSize: 'clamp(40px, 6vw, 72px)' }}
         >
           常见问题
@@ -63,7 +63,7 @@ export function FAQ() {
                   className="flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:bg-white/[0.02]"
                   aria-expanded={open}
                 >
-                  <span className="font-display text-xl font-bold text-ink sm:text-2xl">
+                  <span className="text-xl font-bold text-ink sm:text-2xl">
                     {qa.q}
                   </span>
                   <ChevronDown

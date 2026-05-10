@@ -14,7 +14,7 @@ export function Pricing() {
     >
       <div className="mx-auto max-w-[1200px]">
         <h2
-          className="reveal mb-14 max-w-[900px] font-display font-bold leading-[1.05] tracking-[-0.01em] text-ink"
+          className="reveal mb-14 max-w-[900px] font-bold leading-[1.05] tracking-[-0.01em] text-ink"
           style={{ fontSize: 'clamp(40px, 6vw, 72px)' }}
         >
           一份授权,<span className="text-accent">3 台设备</span>
@@ -29,11 +29,11 @@ export function Pricing() {
           </p>
 
           <div className="mb-3 flex items-baseline gap-2">
-            <span className="font-display text-7xl font-bold leading-none text-ink">
+            <span className="text-7xl font-bold leading-none text-ink">
               {PRICING.amount}
             </span>
             {PRICING.period ? (
-              <span className="font-display text-2xl text-[--ink-faint]">
+              <span className="text-2xl text-[--ink-faint]">
                 {PRICING.period}
               </span>
             ) : null}

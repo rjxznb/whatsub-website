@@ -48,7 +48,7 @@ export function Download() {
     >
       <div className="mx-auto max-w-[1200px]">
         <h2
-          className="reveal mb-3 max-w-[900px] font-display font-bold leading-[1.05] tracking-[-0.01em] text-ink"
+          className="reveal mb-3 max-w-[900px] font-bold leading-[1.05] tracking-[-0.01em] text-ink"
           style={{ fontSize: 'clamp(40px, 6vw, 72px)' }}
         >
           下载 <span className="text-accent">whatSub</span>
@@ -65,7 +65,7 @@ export function Download() {
             >
               <div className="mb-6 flex items-center gap-3">
                 <p.Icon className="h-6 w-6 text-[--ink-soft]" strokeWidth={1.5} />
-                <h3 className="font-display text-3xl font-bold leading-tight text-ink">
+                <h3 className="text-3xl font-bold leading-tight text-ink">
                   {p.label}
                 </h3>
               </div>

@@ -1,44 +1,55 @@
 'use client';
-import { useEffect, useState } from 'react';
 import { LINKS } from '@/lib/constants';
 
-const NAV_LINKS = [
-  { id: 'why', label: '功能' },
+type NavLink = { id: string; label: string };
+
+const DEFAULT_LINKS: NavLink[] = [
+  { id: 'demo', label: '功能' },
   { id: 'download', label: '下载' },
   { id: 'pricing', label: '定价' },
   { id: 'faq', label: 'FAQ' },
 ];
 
-export function Nav() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
+export function Nav({ links = DEFAULT_LINKS }: { links?: NavLink[] }) {
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
     <nav
-      className={`fixed inset-x-0 top-0 z-50 transition-[backdrop-filter,border-color] duration-200 ${
-        scrolled
-          ? 'border-b border-[--hairline] bg-bg/85 backdrop-blur-lg'
-          : 'border-b border-transparent'
-      }`}
+      className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08]"
+      style={{
+        backgroundColor: 'rgba(0, 0, 0, 0.55)',
+        backdropFilter: 'blur(30px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(30px) saturate(180%)',
+      }}
     >
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-6 sm:px-10 lg:px-16">
-        <a href="#top" className="flex items-baseline font-display text-[28px] font-bold leading-none tracking-tight">
-          <span>what</span>
-          <span className="text-accent" style={{ textShadow: '0 0 24px var(--accent-glow)' }}>Sub</span>
-          <span>?</span>
+        <a
+          href="#top"
+          className="relative flex items-center"
+          aria-label="whatSub"
+        >
+          {/* White light glow behind the wordmark */}
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute"
+            style={{
+              inset: '-14px -10px',
+              background:
+                'radial-gradient(ellipse at center, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.18) 45%, transparent 75%)',
+              filter: 'blur(10px)',
+            }}
+          />
+          <img
+            src="/whatsub-wordmark.png"
+            alt="whatSub"
+            className="relative block h-9 w-auto"
+            style={{ mixBlendMode: 'screen' }}
+          />
         </a>
         <div className="flex items-center gap-7">
           <ul className="hidden md:flex items-center gap-7 text-sm text-[--ink-soft]">
-            {NAV_LINKS.map((l) => (
+            {links.map((l) => (
               <li key={l.id}>
                 <button
                   onClick={() => scrollTo(l.id)}
