@@ -38,20 +38,24 @@ client-website/
     ├── app/
     │   ├── layout.tsx          # <html lang="zh"> + Caveat preload + @fontsource/jetbrains-mono import
     │   ├── globals.css         # @font-face Caveat + brand CSS vars + body vignette + .reveal/.visible classes
-    │   └── page.tsx            # Renders Nav + HeroSlim + DemoDiagonal + Download + Pricing + FAQ + Footer
+    │   ├── page.tsx            # Renders Nav + HeroSlim + DemoDiagonal + Download + Pricing + FAQ + Footer
+    │   └── payment/
+    │       └── success/
+    │           └── page.tsx    # Polling success page — reads ?out_trade_no=... after Alipay return_url, polls /api/license/payment/order-status until license key is minted (or 60s timeout). Wraps useSearchParams() consumer in <Suspense> for static export
     ├── components/
     │   ├── Nav.tsx             # Apple-style frosted glass (rgba(0,0,0,0.55) + backdrop-blur(30px) saturate(180%)). Wordmark logo (left) + 4 anchor links (功能/下载/定价/FAQ) + 购买授权 CTA. Accepts optional `links` prop, default targets [#demo, #download, #pricing, #faq]
     │   ├── HeroSlim.tsx        # Caveat signature "hey, what'Sub?" (Sub blue, hover scale-125 + white text-shadow matching desktop app WelcomeIntro hover) + tagline "让一句字幕，慢慢成为你的英语" + 2 download buttons. No version chip, no preview window
     │   ├── DemoDiagonal.tsx    # Sticky-pinned scroll-driven full-screen demo gallery. Container is N×100vh tall, inner is sticky 100vh; demos stack with z-index 0..N-1, each one >0 has clip-path: polygon(...) animated by scroll progress to do a diagonal-wipe reveal from below. A glowing white beam line (positioned div + rotate + 4-stop white box-shadow) sits along the active wipe diagonal. Uses `lineCoords()` helper (single source of truth for both clip-path polygon corners and beam endpoint coords). Demos are placeholder gradient cards with text caption — swap `<DemoSlot>` body for real GIF/video later
     │   ├── Download.tsx        # 2 platform tiles + version chip + GitHub backup link
-    │   ├── Pricing.tsx         # Single-tier card → 小红书 store CTA
+    │   ├── Pricing.tsx         # Email form + 立即购买 → /api/license/payment/create-order → Alipay redirect. 小红书 link kept as small fallback
     │   ├── FAQ.tsx             # 7 expandable rows (chevron-rotate)
     │   └── Footer.tsx          # © 2026 whatSub + ICP 备案号 + 联系客服
     ├── hooks/
     │   ├── useReveal.ts        # IntersectionObserver — adds .visible to .reveal items on scroll-in
     │   └── useLatestVersion.ts # fetch /api/license/latest → {version, pubDate, winUrl, macUrl} + fallback
     └── lib/
-        └── constants.ts        # BRAND, LINKS (xhsStore, githubReleases, icpRecord), PRICING (¥99 placeholder)
+        ├── constants.ts        # BRAND, LINKS (xhsStore, githubReleases, icpRecord), PRICING (¥99 placeholder)
+        └── payment-api.ts      # Fetch wrappers for /api/license/payment/create-order + /api/license/payment/order-status
 ```
 
 ## Brand tokens
@@ -151,6 +155,8 @@ nginx config lives at `/data/nginx-conf.d/whatsub.conf` (sibling to enghub's eve
 
 8. **Deploy via in-place file replacement, NOT directory rename.** Past us tried `mv /data/whatsub-web /data/whatsub-web.old; mv whatsub-web.new whatsub-web` and broke the docker bind mount (container kept pointing at the old inode). The in-place extract (`rm -rf .../* && tar xzf ... -C .../`) preserves the directory inode so the bind mount stays valid. See deploy section above.
 
+13. **Pricing has an email form, not a static link.** The 立即购买 button posts to `/api/license/payment/create-order` with the buyer's email; the response includes a redirect URL the browser navigates to (Alipay 收银台). On successful payment, Alipay returns the user to `/payment/success?out_trade_no=...`, which polls our backend for the minted license key. 小红书 entry is preserved as a small fallback link in case the Alipay path has issues. License delivery is dual-channel (on-screen + email) — see `docs/superpowers/specs/2026-05-10-alipay-payment-design.md` for the notify + query-fallback mint flow.
+
 ## Gotchas (we hit these; check first if a similar symptom shows up)
 
 - **Chrome shows `此页面不安全 (HTTPS 连接断开)` despite valid cert.** Look at DevTools → Security tab. If it says "资源 - 出现证书错误的活动内容", the issue is a third-party HTTPS resource with cert error (Google Fonts in mainland China is the usual culprit). Fixed by self-hosting all fonts via `@fontsource/*`.
@@ -173,6 +179,12 @@ nginx config lives at `/data/nginx-conf.d/whatsub.conf` (sibling to enghub's eve
 
 - **`pnpm install` slow without taobao mirror.** `.npmrc` in this directory pins `registry=https://registry.npmmirror.com`. Don't delete it — the international npmjs registry is unreliable from mainland.
 
+- **`useSearchParams()` in `/payment/success` MUST be inside a `<Suspense>` boundary** for `output: 'export'` to build. The page wraps `SuccessInner` (which calls `useSearchParams()`) in `<Suspense>`. Don't refactor it out without testing `pnpm build`.
+
+- **The poll page hard-stops at 60 seconds.** After timeout it shows a "联系客服" branch with the order ref — buyers who pay successfully but don't get a synchronous mint can still recover via email (delivered async by the backend) or admin support.
+
+- **Static export emits `out/payment/success.html` (no trailing slash), NOT `out/payment/success/index.html`.** This is Next 14's default with `trailingSlash: false`. nginx serves `https://whatsub.eversay.cc/payment/success` from `success.html` via try_files — no nginx config change needed. If you ever switch the project to `trailingSlash: true`, every route changes to `<route>/index.html` and nginx will handle it the same way.
+
 ## Quick map
 
 | Task | File |
@@ -182,7 +194,10 @@ nginx config lives at `/data/nginx-conf.d/whatsub.conf` (sibling to enghub's eve
 | Replace a demo placeholder with a real GIF/video | `src/components/DemoDiagonal.tsx` — swap the `<DemoSlot>` body. Mechanic (clip-path + beam) doesn't care about content |
 | Tune the diagonal slope or beam glow | `src/components/DemoDiagonal.tsx` — `SLOPE_OFFSET` (degrees of slope) and the inline `boxShadow` on `<BeamLine>` |
 | Add an FAQ row | `src/components/FAQ.tsx` — append to `QUESTIONS` array |
-| Change pricing | `src/lib/constants.ts` — `PRICING.amount` and `PRICING.features` |
+| Adjust price (display + paid amount) | Display: `src/lib/constants.ts` `PRICING.amount`. Backend amount: `/opt/whatsub/.env` `LICENSE_PRICE_CNY`. **Both must agree** — frontend price is just visual; backend is the source of truth Alipay charges. |
+| Change "立即购买" copy / disable Alipay path | `src/components/Pricing.tsx` — replace the form with the old `<a href={LINKS.xhsStore}>` block; rebuild + redeploy |
+| Tweak success-page polling | `src/app/payment/success/page.tsx` — `POLL_INTERVAL_MS` (1500ms) and `POLL_TIMEOUT_MS` (60000ms) constants near the top |
+| Update support contact link on timeout | `src/app/payment/success/page.tsx` — the `<a href="...小红书...">` inside the `'timeout'` branch (currently hard-coded; could later pull from `LINKS.supportXhs` in constants) |
 | Change 小红书 store URL | `src/lib/constants.ts` — `LINKS.xhsStore` |
 | Add a new section | new component in `src/components/` + import + render in `src/app/page.tsx`. If it should appear in the nav, add an entry to `Nav`'s links prop |
 | Tune brand colors | edit all 3: `tailwind.config.ts` + `src/app/globals.css` + `src/lib/constants.ts` |
@@ -197,5 +212,5 @@ nginx config lives at `/data/nginx-conf.d/whatsub.conf` (sibling to enghub's eve
 - "Why" cards / "How it works" steps / "Features" grid — these existed in earlier iterations and were collapsed into DemoDiagonal. Don't add them back as separate sections — if the product needs more explanation than 4 demo slots can carry, the right move is to expand the DemoDiagonal demos (more slots, longer captions) rather than reintroduce "show + tell" duplication
 - Analytics
 - A/B testing
-- Direct payment / Stripe / Wechat Pay (purchase flows through 小红书 store link)
+- ~~Direct payment~~ Alipay PC web payment is integrated; see Pricing.tsx + payment-api.ts + /payment/success. Stripe and Wechat Pay still NOT integrated.
 - CMS-driven content (everything is hard-coded — change the .tsx files)
