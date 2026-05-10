@@ -1,5 +1,4 @@
 'use client';
-import { LINKS } from '@/lib/constants';
 
 type NavLink = { id: string; label: string };
 
@@ -59,15 +58,14 @@ export function Nav({ links = DEFAULT_LINKS }: { links?: NavLink[] }) {
               </li>
             ))}
           </ul>
-          <a
-            href={LINKS.xhsStore}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => scrollTo('pricing')}
             className="inline-flex h-9 items-center rounded-lg bg-accent px-4 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
             style={{ boxShadow: '0 0 0 1px rgba(59,155,255,0.4), 0 0 24px var(--accent-glow)' }}
           >
             购买授权
-          </a>
+          </button>
         </div>
       </div>
     </nav>
