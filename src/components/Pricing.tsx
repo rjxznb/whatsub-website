@@ -1,11 +1,37 @@
 'use client';
 
 import { Check, ShoppingBag } from 'lucide-react';
+import { useState } from 'react';
 import { useReveal } from '@/hooks/useReveal';
 import { LINKS, PRICING } from '@/lib/constants';
+import { createOrder } from '@/lib/payment-api';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function Pricing() {
   const ref = useReveal<HTMLElement>();
+  const [email, setEmail] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!EMAIL_RE.test(email)) {
+      setError('请输入有效的邮箱地址');
+      return;
+    }
+    setBusy(true);
+    try {
+      const { payUrl } = await createOrder(email);
+      window.location.href = payUrl;
+    } catch (err) {
+      setBusy(false);
+      const msg = err instanceof Error ? err.message : 'unknown';
+      setError(msg === 'invalid_email' ? '邮箱格式不正确' : '网络异常，请稍后再试');
+    }
+  };
+
   return (
     <section
       ref={ref}
@@ -28,10 +54,15 @@ export function Pricing() {
             授权方式
           </p>
 
-          <div className="mb-3 flex items-baseline gap-2">
+          <div className="mb-3 flex items-baseline gap-3">
             <span className="text-7xl font-bold leading-none text-ink">
               {PRICING.amount}
             </span>
+            {PRICING.originalAmount ? (
+              <span className="text-2xl text-[--ink-faint] line-through">
+                {PRICING.originalAmount}
+              </span>
+            ) : null}
             {PRICING.period ? (
               <span className="text-2xl text-[--ink-faint]">
                 {PRICING.period}
@@ -51,18 +82,43 @@ export function Pricing() {
             ))}
           </ul>
 
-          <a
-            href={LINKS.xhsStore}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-accent text-sm font-semibold text-white transition-transform hover:-translate-y-px"
-            style={{ boxShadow: '0 0 0 1px rgba(59,155,255,0.4), 0 0 32px var(--accent-glow)' }}
-          >
-            <ShoppingBag className="h-4 w-4" strokeWidth={2} /> 在小红书购买
-          </a>
+          <form onSubmit={onSubmit} className="mb-3 space-y-3">
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="邮箱地址，授权码会发到这里"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={busy}
+              className="block w-full rounded-lg border border-[--hairline-strong] bg-bg/50 px-4 py-3 text-sm text-ink placeholder:text-[--ink-faint] focus:border-accent focus:outline-none disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={busy || !email}
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-accent text-sm font-semibold text-white transition-transform hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-60"
+              style={{ boxShadow: '0 0 0 1px rgba(59,155,255,0.4), 0 0 32px var(--accent-glow)' }}
+            >
+              <ShoppingBag className="h-4 w-4" strokeWidth={2} />
+              {busy ? '处理中...' : '立即购买 · 跳转支付宝'}
+            </button>
+            {error ? (
+              <p className="text-center text-xs text-red-400">{error}</p>
+            ) : null}
+          </form>
 
-          <p className="mt-4 text-center text-xs text-[--ink-faint]">
-            数字商品售出不退,购买前可先试用免费档位
+          <p className="text-center text-xs text-[--ink-faint]">
+            或{' '}
+            <a
+              href={LINKS.xhsStore}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline transition-colors hover:text-[--ink-muted]"
+            >
+              私信小红书购买
+            </a>
+            {' · '}
+            数字商品售出不退
           </p>
         </div>
       </div>
