@@ -44,7 +44,6 @@ export function Nav({ links = DEFAULT_LINKS }: { links?: NavLink[] }) {
             src="/whatsub-wordmark.png"
             alt="whatSub"
             className="relative block h-9 w-auto"
-            style={{ mixBlendMode: 'screen' }}
           />
         </a>
         <div className="flex items-center gap-7">

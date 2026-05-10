@@ -44,7 +44,8 @@ export const LINKS = {
  * Eventually move to a CMS or env if the price gets dynamic.
  */
 export const PRICING = {
-  amount: '¥99',           // user fills in real price
+  amount: '¥29.9',
+  originalAmount: '¥99' as string | null,  // struck-through original price shown next to amount
   period: null as string | null,
   label: '永久授权',
   features: [
