@@ -9,7 +9,6 @@ const PLATFORMS = [
   {
     key: 'windows-x86_64' as const,
     label: 'Windows',
-    sub: 'Win 10/11 · x64 · NSIS 安装包',
     href: '/download/win',
     githubAsset: 'whatsub_x64-setup.exe',
     Icon: DownloadIcon,
@@ -17,7 +16,6 @@ const PLATFORMS = [
   {
     key: 'darwin-aarch64' as const,
     label: 'macOS',
-    sub: 'Apple Silicon · 已签名 + 公证',
     href: '/download/mac',
     githubAsset: 'whatsub_aarch64.dmg',
     Icon: Apple,
@@ -69,7 +67,6 @@ export function Download() {
                   {p.label}
                 </h3>
               </div>
-              <p className="mb-7 text-sm text-[--ink-soft]">{p.sub}</p>
               <a
                 href={p.href}
                 className="mb-4 inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-white text-sm font-semibold text-bg transition-transform hover:-translate-y-px"
@@ -87,10 +84,6 @@ export function Download() {
             </div>
           ))}
         </div>
-
-        <p className="reveal reveal-delay-3 mt-8 text-center text-xs text-[--ink-faint]">
-          Intel Mac 暂不支持 · ARM64 Windows 暂不支持 · 安装后首次激活需联网,激活后完全离线运行
-        </p>
       </div>
     </section>
   );
