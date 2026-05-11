@@ -51,7 +51,7 @@ export function HeroSlim() {
             style={{ boxShadow: '0 0 24px var(--accent-glow)' }}
           >
             <ShieldCheck className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />
-            We Value Copyright · 100% Local Processing
+            我们重视版权 · 100% 本地处理
           </span>
         </div>
       </div>
