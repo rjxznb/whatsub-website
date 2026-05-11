@@ -30,7 +30,7 @@ export function HeroSlim() {
           让一句字幕，慢慢成为你的英语
         </p>
 
-        <div className="reveal reveal-delay-2 mb-6 flex flex-wrap items-center justify-center gap-3">
+        <div className="reveal reveal-delay-2 mb-14 flex flex-wrap items-center justify-center gap-3 sm:mb-20">
           <Link
             href="/download/win"
             className="inline-flex h-12 items-center gap-2 rounded-lg bg-white px-7 text-sm font-semibold text-bg transition-transform hover:-translate-y-px"
