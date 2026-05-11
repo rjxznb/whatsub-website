@@ -194,7 +194,7 @@ nginx config lives at `/data/nginx-conf.d/whatsub.conf` (sibling to enghub's eve
 | Replace a demo placeholder with a real GIF/video | `src/components/DemoDiagonal.tsx` — swap the `<DemoSlot>` body. Mechanic (clip-path + beam) doesn't care about content |
 | Tune the diagonal slope or beam glow | `src/components/DemoDiagonal.tsx` — `SLOPE_OFFSET` (degrees of slope) and the inline `boxShadow` on `<BeamLine>` |
 | Add an FAQ row | `src/components/FAQ.tsx` — append to `QUESTIONS` array |
-| Adjust price (display + paid amount) | Display: `src/lib/constants.ts` `PRICING.amount`. Backend amount: `/opt/whatsub/.env` `LICENSE_PRICE_CNY`. **Both must agree** — frontend price is just visual; backend is the source of truth Alipay charges. |
+| Adjust price (display + paid amount) | Full runbook: [`docs/ops/changing-price.md`](docs/ops/changing-price.md). TL;DR — display: `src/lib/constants.ts` `PRICING.amount`; backend amount: `/opt/whatsub/.env` `LICENSE_PRICE_CNY`. **Both must agree** — frontend price is just visual; backend is the source of truth Alipay charges. |
 | Change "立即购买" copy / disable Alipay path | `src/components/Pricing.tsx` — replace the form with the old `<a href={LINKS.xhsStore}>` block; rebuild + redeploy |
 | Tweak success-page polling | `src/app/payment/success/page.tsx` — `POLL_INTERVAL_MS` (1500ms) and `POLL_TIMEOUT_MS` (60000ms) constants near the top |
 | Update support contact link on timeout | `src/app/payment/success/page.tsx` — the `<a href="...小红书...">` inside the `'timeout'` branch (currently hard-coded; could later pull from `LINKS.supportXhs` in constants) |
