@@ -2,6 +2,8 @@
 
 Marketing + download landing page for whatSub at **`https://whatsub.eversay.cc/`**. Next.js 14 App Router + Tailwind, **static export** (`output: 'export'`) to plain HTML/CSS/JS. Served by enghub's nginx on the same Aliyun ECS as Eversay (no Node runtime in production — just static files).
 
+> **Status as of 2026-05-11:** Production is live with Alipay 电脑网站支付 v3 fully integrated. Validated end-to-end (real ¥29.9 self-purchase verified mint + email + on-screen key). Cross-repo: backend lives in `rjxznb/whatsub-license` (Hono + Postgres on Node 20 in Docker). Outstanding TODO: 16 commits unpushed to origin/main (GitHub SSL handshake from CN was flaky at commit time — `git push origin main` when network calms down).
+
 > **Companion repos:**
 > - License backend: [`rjxznb/whatsub-license`](https://github.com/rjxznb/whatsub-license) — Hono + Postgres on Node 20, exposes `/api/license/*`, `/admin/`, `/download/{win,mac}` on the same domain
 > - Desktop app: `client/` (sibling in this repo) — Tauri 2
@@ -41,21 +43,21 @@ client-website/
     │   ├── page.tsx            # Renders Nav + HeroSlim + DemoDiagonal + Download + Pricing + FAQ + Footer
     │   └── payment/
     │       └── success/
-    │           └── page.tsx    # Polling success page — reads ?out_trade_no=... after Alipay return_url, polls /api/license/payment/order-status until license key is minted (or 60s timeout). Wraps useSearchParams() consumer in <Suspense> for static export
+    │           └── page.tsx    # Polling success page — reads ?out_trade_no=... after Alipay return_url, polls /api/license/payment/status/:no every 1.5s until license key is minted (or 60s timeout → "联系客服" branch). Wraps useSearchParams() consumer in <Suspense> for static export
     ├── components/
-    │   ├── Nav.tsx             # Apple-style frosted glass (rgba(0,0,0,0.55) + backdrop-blur(30px) saturate(180%)). Wordmark logo (left) + 4 anchor links (功能/下载/定价/FAQ) + 购买授权 CTA. Accepts optional `links` prop, default targets [#demo, #download, #pricing, #faq]
-    │   ├── HeroSlim.tsx        # Caveat signature "hey, what'Sub?" (Sub blue, hover scale-125 + white text-shadow matching desktop app WelcomeIntro hover) + tagline "让一句字幕，慢慢成为你的英语" + 2 download buttons. No version chip, no preview window
+    │   ├── Nav.tsx             # Apple-style frosted glass (rgba(0,0,0,0.55) + backdrop-blur(30px) saturate(180%)). Wordmark logo (left) + 4 anchor links (功能/下载/定价/FAQ) + 购买授权 CTA which scrolls to #pricing (NOT a 小红书 link anymore). Accepts optional `links` prop, default targets [#demo, #download, #pricing, #faq]
+    │   ├── HeroSlim.tsx        # Caveat signature "hey, what'Sub?" (Sub blue, hover scale-125 + white text-shadow matching desktop app WelcomeIntro hover) + CN tagline "让一句字幕，慢慢成为你的英语" + 2 download buttons + accent-blue pill badge with ShieldCheck icon: "我们重视版权 · 100% 本地处理". The badge sits BELOW the buttons (reveal-delay-3) as a trust signal, separated by mb-14/sm:mb-20 from the CTA cluster. No version chip, no preview window
     │   ├── DemoDiagonal.tsx    # Sticky-pinned scroll-driven full-screen demo gallery. Container is N×100vh tall, inner is sticky 100vh; demos stack with z-index 0..N-1, each one >0 has clip-path: polygon(...) animated by scroll progress to do a diagonal-wipe reveal from below. A glowing white beam line (positioned div + rotate + 4-stop white box-shadow) sits along the active wipe diagonal. Uses `lineCoords()` helper (single source of truth for both clip-path polygon corners and beam endpoint coords). Demos are placeholder gradient cards with text caption — swap `<DemoSlot>` body for real GIF/video later
-    │   ├── Download.tsx        # 2 platform tiles + version chip + GitHub backup link
-    │   ├── Pricing.tsx         # Email form + 立即购买 → /api/license/payment/create-order → Alipay redirect. 小红书 link kept as small fallback
-    │   ├── FAQ.tsx             # 7 expandable rows (chevron-rotate)
+    │   ├── Download.tsx        # 2 platform tiles (Windows / macOS), each with icon + label + download CTA + GitHub backup link. NO platform spec sub-lines (e.g., "Win 10/11 · x64 · NSIS" was removed) and NO bottom legacy notice — kept minimal. `useLatestVersion()` fetches /api/license/latest for the version number; falls back to a hardcoded value in dev or when backend is unreachable
+    │   ├── Pricing.tsx         # Email form + 立即购买 → /api/license/payment/create-order → Alipay redirect. Bottom of card has 2 trust lines: "软件授权 · 不含视频内容 · 无版权风险" (ink-muted) above "或 私信小红书购买 · 数字商品售出不退" (ink-faint). 小红书 link kept as small fallback. Reads PRICING constants for amount/originalAmount strikethrough/features
+    │   ├── FAQ.tsx             # 8 expandable rows (chevron-rotate). First row is the differentiation Q: "这和那些卖「英语学习视频包」的有什么不同？" — explicitly names the 视频包 archetype + emphasizes software-vs-content distinction + local processing
     │   └── Footer.tsx          # © 2026 whatSub + ICP 备案号 + 联系客服
     ├── hooks/
     │   ├── useReveal.ts        # IntersectionObserver — adds .visible to .reveal items on scroll-in
     │   └── useLatestVersion.ts # fetch /api/license/latest → {version, pubDate, winUrl, macUrl} + fallback
     └── lib/
-        ├── constants.ts        # BRAND, LINKS (xhsStore, githubReleases, icpRecord), PRICING (¥99 placeholder)
-        └── payment-api.ts      # Fetch wrappers for /api/license/payment/create-order + /api/license/payment/order-status
+        ├── constants.ts        # BRAND, LINKS (xhsStore, githubReleases, icpRecord), PRICING ({amount: '¥29.9', originalAmount: '¥99' (strikethrough), label: '永久授权', features: [...]})
+        └── payment-api.ts      # Fetch wrappers for /api/license/payment/create-order + /api/license/payment/status/:no
 ```
 
 ## Brand tokens
@@ -157,6 +159,16 @@ nginx config lives at `/data/nginx-conf.d/whatsub.conf` (sibling to enghub's eve
 
 13. **Pricing has an email form, not a static link.** The 立即购买 button posts to `/api/license/payment/create-order` with the buyer's email; the response includes a redirect URL the browser navigates to (Alipay 收银台). On successful payment, Alipay returns the user to `/payment/success?out_trade_no=...`, which polls our backend for the minted license key. 小红书 entry is preserved as a small fallback link in case the Alipay path has issues. License delivery is dual-channel (on-screen + email) — see `docs/superpowers/specs/2026-05-10-alipay-payment-design.md` for the notify + query-fallback mint flow.
 
+14. **Differentiation messaging in 3 places — names "视频包" explicitly.** Competitors sell ¥9.9/¥19.9 bundles of pirated YouTube videos with bilingual subtitles. We sell software that processes the buyer's own legally-accessed YouTube. The distinction is reinforced at three buyer-decision touchpoints: Hero pill badge (`我们重视版权 · 100% 本地处理`, accent-blue + ShieldCheck icon, below the download buttons), Pricing card bottom (`软件授权 · 不含视频内容 · 无版权风险`, ink-muted, above the legal小print), and FAQ first row (`这和那些卖「英语学习视频包」的有什么不同？` — full answer explains piracy vs software-as-tool). The Hero badge is the most prominent — it's the trust signal that closes the visual gap between "downloads" and "buy now". Don't soften the FAQ wording; the explicit naming of "视频包" is load-bearing for the differentiation.
+
+15. **Production deploy state (as of 2026-05-11):**
+    - Frontend live at `https://whatsub.eversay.cc/` (static export → /data/whatsub-web/ on Aliyun ECS, bind-mounted into enghub-nginx-1)
+    - Backend (`whatsub-license` repo) live at /api/license/* with **production Alipay APPID `2021006152636857`** and **production gateway `https://openapi.alipay.com/gateway.do`**
+    - SMTP: QQ `2216681472@qq.com` via `smtp.qq.com:465` (auth code in `/opt/whatsub/.env`)
+    - License keys mint format: `WHATSUB-XXXX-XXXX-XXXX-XXXX`, 3-device limit, lifetime no-revocation
+    - Validated end-to-end with a real ¥29.9 purchase 2026-05-11 (order `ord_3de22a25-...` marked `cancelled` after self-refund; license `WHATSUB-AWBW-SVCB-32VN-7EWH` marked `do not activate` in buyer_note)
+    - 16 commits unpushed to origin/main as of doc-update time; pushed when GitHub SSL handshake from CN stabilizes (`git push origin main`)
+
 ## Gotchas (we hit these; check first if a similar symptom shows up)
 
 - **Chrome shows `此页面不安全 (HTTPS 连接断开)` despite valid cert.** Look at DevTools → Security tab. If it says "资源 - 出现证书错误的活动内容", the issue is a third-party HTTPS resource with cert error (Google Fonts in mainland China is the usual culprit). Fixed by self-hosting all fonts via `@fontsource/*`.
@@ -189,11 +201,12 @@ nginx config lives at `/data/nginx-conf.d/whatsub.conf` (sibling to enghub's eve
 
 | Task | File |
 |------|------|
-| Tweak Hero copy / tagline | `src/components/HeroSlim.tsx` |
+| Tweak Hero copy / tagline / copyright badge | `src/components/HeroSlim.tsx` — tagline is line 29ish, badge text is line 50ish (`我们重视版权 · 100% 本地处理`). Badge styling: accent border + ShieldCheck icon + accent glow. To remove badge entirely, delete the trailing `<div className="reveal reveal-delay-3 ...">` block |
 | Add or change a demo slot in the diagonal gallery | `src/components/DemoDiagonal.tsx` — edit `DEMOS` array (caption + future image src). Total scroll height auto-grows as N grows |
 | Replace a demo placeholder with a real GIF/video | `src/components/DemoDiagonal.tsx` — swap the `<DemoSlot>` body. Mechanic (clip-path + beam) doesn't care about content |
 | Tune the diagonal slope or beam glow | `src/components/DemoDiagonal.tsx` — `SLOPE_OFFSET` (degrees of slope) and the inline `boxShadow` on `<BeamLine>` |
-| Add an FAQ row | `src/components/FAQ.tsx` — append to `QUESTIONS` array |
+| Add an FAQ row | `src/components/FAQ.tsx` — insert into `QUESTIONS` array. First row is the differentiation question (`视频包`) — keep it first; new rows append to the end |
+| Edit differentiation messaging (Hero badge + Pricing card + FAQ Q1) | All three must stay coherent. See Decision #14. Don't soften the FAQ wording about 视频包 — the explicit naming is load-bearing |
 | Adjust price (display + paid amount) | Full runbook: [`docs/ops/changing-price.md`](docs/ops/changing-price.md). TL;DR — display: `src/lib/constants.ts` `PRICING.amount`; backend amount: `/opt/whatsub/.env` `LICENSE_PRICE_CNY`. **Both must agree** — frontend price is just visual; backend is the source of truth Alipay charges. |
 | Change "立即购买" copy / disable Alipay path | `src/components/Pricing.tsx` — replace the form with the old `<a href={LINKS.xhsStore}>` block; rebuild + redeploy |
 | Tweak success-page polling | `src/app/payment/success/page.tsx` — `POLL_INTERVAL_MS` (1500ms) and `POLL_TIMEOUT_MS` (60000ms) constants near the top |
