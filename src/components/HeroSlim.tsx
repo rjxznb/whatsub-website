@@ -25,8 +25,12 @@ export function HeroSlim() {
           ?
         </h1>
 
-        <p className="reveal reveal-delay-1 mx-auto mb-10 max-w-[640px] text-[clamp(16px,2vw,22px)] leading-[1.55] text-[--ink-soft]">
+        <p className="reveal reveal-delay-1 mx-auto mb-3 max-w-[640px] text-[clamp(16px,2vw,22px)] leading-[1.55] text-[--ink-soft]">
           让一句字幕，慢慢成为你的英语
+        </p>
+
+        <p className="reveal reveal-delay-1 mx-auto mb-10 max-w-[560px] text-[clamp(11px,1.2vw,13px)] uppercase tracking-[0.18em] text-[--ink-faint]">
+          卖的是软件，不是视频包 · 100% 本地运行，无版权风险
         </p>
 
         <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3">

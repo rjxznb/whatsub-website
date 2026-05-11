@@ -107,6 +107,9 @@ export function Pricing() {
             ) : null}
           </form>
 
+          <p className="mb-2 text-center text-xs text-[--ink-muted]">
+            软件授权 · 不含视频内容 · 无版权风险
+          </p>
           <p className="text-center text-xs text-[--ink-faint]">
             或{' '}
             <a
