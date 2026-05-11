@@ -26,21 +26,11 @@ export function HeroSlim() {
           ?
         </h1>
 
-        <p className="reveal reveal-delay-1 mx-auto mb-3 max-w-[640px] text-[clamp(16px,2vw,22px)] leading-[1.55] text-[--ink-soft]">
+        <p className="reveal reveal-delay-1 mx-auto mb-10 max-w-[640px] text-[clamp(16px,2vw,22px)] leading-[1.55] text-[--ink-soft]">
           让一句字幕，慢慢成为你的英语
         </p>
 
-        <div className="reveal reveal-delay-1 mb-10 flex justify-center">
-          <span
-            className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-sm font-semibold text-accent sm:text-base"
-            style={{ boxShadow: '0 0 24px var(--accent-glow)' }}
-          >
-            <ShieldCheck className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />
-            We Value Copyright · 100% Local Processing
-          </span>
-        </div>
-
-        <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3">
+        <div className="reveal reveal-delay-2 mb-6 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/download/win"
             className="inline-flex h-12 items-center gap-2 rounded-lg bg-white px-7 text-sm font-semibold text-bg transition-transform hover:-translate-y-px"
@@ -53,6 +43,16 @@ export function HeroSlim() {
           >
             <span aria-hidden="true">⬇</span> macOS 下载
           </Link>
+        </div>
+
+        <div className="reveal reveal-delay-3 flex justify-center">
+          <span
+            className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-2 text-sm font-semibold text-accent sm:text-base"
+            style={{ boxShadow: '0 0 24px var(--accent-glow)' }}
+          >
+            <ShieldCheck className="h-4 w-4" strokeWidth={2.5} aria-hidden="true" />
+            We Value Copyright · 100% Local Processing
+          </span>
         </div>
       </div>
     </section>
