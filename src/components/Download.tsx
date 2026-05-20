@@ -1,6 +1,7 @@
 'use client';
 
-import { Apple, Download as DownloadIcon, Github } from 'lucide-react';
+import { ArrowDownToLine, Github, Puzzle } from 'lucide-react';
+import { AppleLogo, WindowsLogo } from '@/components/Icons';
 import { useLatestVersion } from '@/hooks/useLatestVersion';
 import { useReveal } from '@/hooks/useReveal';
 import { LINKS } from '@/lib/constants';
@@ -10,17 +11,25 @@ const PLATFORMS = [
     key: 'windows-x86_64' as const,
     label: 'Windows',
     href: '/download/win',
-    githubAsset: 'whatsub_x64-setup.exe',
-    Icon: DownloadIcon,
+    Icon: WindowsLogo,
+    // Suffix in the GitHub release asset name. Full asset filename is
+    // built as `whatsub_<version>_<suffix>` to match the release artifact
+    // naming convention (see https://github.com/rjxznb/whatsub-releases/releases).
+    githubAssetSuffix: 'x64-setup.exe',
   },
   {
     key: 'darwin-aarch64' as const,
     label: 'macOS',
     href: '/download/mac',
-    githubAsset: 'whatsub_aarch64.dmg',
-    Icon: Apple,
+    Icon: AppleLogo,
+    githubAssetSuffix: 'aarch64.dmg',
   },
 ];
+
+function buildGithubAssetUrl(version: string | null, suffix: string): string {
+  if (!version) return LINKS.githubReleases;
+  return `${LINKS.githubReleases}/download/v${version}/whatsub_${version}_${suffix}`;
+}
 
 function fmtPubDate(iso: string | null): string {
   if (!iso) return '';
@@ -47,7 +56,7 @@ export function Download() {
       <div className="mx-auto max-w-[1200px]">
         <h2
           className="reveal mb-3 max-w-[900px] font-bold leading-[1.05] tracking-[-0.01em] text-ink"
-          style={{ fontSize: 'clamp(40px, 6vw, 72px)' }}
+          style={{ fontSize: 'clamp(30px, 6.5vw, 72px)' }}
         >
           下载 <span className="text-accent">whatSub</span>
         </h2>
@@ -62,19 +71,24 @@ export function Download() {
               className={`reveal reveal-delay-${i + 1} flex flex-col rounded-xl border border-[--hairline] bg-[--bg-elev] p-8`}
             >
               <div className="mb-6 flex items-center gap-3">
-                <p.Icon className="h-6 w-6 text-[--ink-soft]" strokeWidth={1.5} />
+                <p.Icon
+                  className={`text-[--ink-soft] ${
+                    p.Icon === WindowsLogo ? 'h-[18px] w-[18px]' : 'h-7 w-7'
+                  }`}
+                />
                 <h3 className="text-3xl font-bold leading-tight text-ink">
                   {p.label}
                 </h3>
               </div>
               <a
                 href={p.href}
-                className="mb-4 inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-white text-sm font-semibold text-bg transition-transform hover:-translate-y-px"
+                className="mb-4 inline-flex h-12 items-center justify-center gap-2.5 rounded-lg bg-white text-sm font-semibold text-bg transition-transform hover:-translate-y-px"
               >
-                <span aria-hidden="true">⬇</span> 下载 v{latest?.version ?? '0.1.26'}
+                <ArrowDownToLine className="h-4 w-4" strokeWidth={2.5} />
+                下载 v{latest?.version ?? '0.1.26'}
               </a>
               <a
-                href={`${LINKS.githubReleases}/download/${p.githubAsset}`}
+                href={buildGithubAssetUrl(latest?.version ?? null, p.githubAssetSuffix)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 font-mono text-xs text-[--ink-faint] transition-colors hover:text-[--ink-muted]"
@@ -83,6 +97,41 @@ export function Download() {
               </a>
             </div>
           ))}
+        </div>
+
+        {/* Companion browser extension — secondary download below the */}
+        {/* two desktop-client tiles. Primary CTA goes through the license */}
+        {/* backend (/download/plugin 302s to the latest GitHub release zip */}
+        {/* via the GitHub API). Backup link points directly at the GitHub */}
+        {/* /releases/latest page so users can recover even if both the */}
+        {/* backend AND the GitHub API are unreachable. */}
+        <div className="reveal reveal-delay-3 mt-4 flex flex-col rounded-xl border border-[--hairline] bg-[--bg-elev] p-8 md:flex-row md:items-center md:justify-between">
+          <div className="mb-6 flex items-start gap-3 md:mb-0">
+            <Puzzle className="mt-0.5 h-7 w-7 text-[--ink-soft]" strokeWidth={1.5} />
+            <div>
+              <h3 className="text-2xl font-bold leading-tight text-ink">
+                配套浏览器插件
+              </h3>
+              <p className="mt-1 text-sm text-[--ink-muted]">
+                Chrome / Edge 扩展 · 搭配桌面端 · YouTube 双语字幕 + 任意网页划词收藏
+              </p>
+              <a
+                href={LINKS.githubPluginReleases}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-2 font-mono text-xs text-[--ink-faint] transition-colors hover:text-[--ink-muted]"
+              >
+                <Github className="h-3.5 w-3.5" strokeWidth={1.5} /> GitHub 备用下载
+              </a>
+            </div>
+          </div>
+          <a
+            href="/download/plugin"
+            className="inline-flex h-12 items-center justify-center gap-2.5 whitespace-nowrap rounded-lg bg-white px-6 text-sm font-semibold text-bg transition-transform hover:-translate-y-px"
+          >
+            <ArrowDownToLine className="h-4 w-4" strokeWidth={2.5} />
+            下载插件
+          </a>
         </div>
       </div>
     </section>
