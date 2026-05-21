@@ -48,7 +48,7 @@ client-website/
     │   ├── Nav.tsx             # Apple-style frosted glass (rgba(0,0,0,0.55) + backdrop-blur(30px) saturate(180%)). Wordmark logo (left) + 4 anchor links (功能/下载/定价/FAQ) + 购买授权 CTA which scrolls to #pricing (NOT a 小红书 link anymore). Accepts optional `links` prop, default targets [#demo, #download, #pricing, #faq]
     │   ├── HeroSlim.tsx        # Caveat signature "hey, what'Sub?" (Sub blue, hover scale-125 + white text-shadow matching desktop app WelcomeIntro hover) + CN tagline "让一句字幕，慢慢成为你的英语" + 2 download buttons + accent-blue pill badge with ShieldCheck icon: "我们重视版权 · 100% 本地处理". The badge sits BELOW the buttons (reveal-delay-3) as a trust signal, separated by mb-14/sm:mb-20 from the CTA cluster. No version chip, no preview window
     │   ├── DemoDiagonal.tsx    # Sticky-pinned scroll-driven full-screen demo gallery. Container is N×100vh tall, inner is sticky 100vh; demos stack with z-index 0..N-1, each one >0 has clip-path: polygon(...) animated by scroll progress to do a diagonal-wipe reveal from below. A glowing white beam line (positioned div + rotate + 4-stop white box-shadow) sits along the active wipe diagonal. Uses `lineCoords()` helper (single source of truth for both clip-path polygon corners and beam endpoint coords). Demos are placeholder gradient cards with text caption — swap `<DemoSlot>` body for real GIF/video later
-    │   ├── Download.tsx        # 2 platform tiles (Windows / macOS), each with icon + label + download CTA + GitHub backup link. NO platform spec sub-lines (e.g., "Win 10/11 · x64 · NSIS" was removed) and NO bottom legacy notice — kept minimal. `useLatestVersion()` fetches /api/license/latest for the version number; falls back to a hardcoded value in dev or when backend is unreachable
+    │   ├── Download.tsx        # 2 platform tiles (Windows / macOS) for the Tauri desktop client + 1 full-width tile below for the companion browser extension (whatsub-plugin). Each tile has icon + label + primary download CTA + small "GitHub 备用下载" link. Desktop tiles' primary CTA → `/download/{win,mac}` (backend 302 → jihulab latest.json); plugin tile's primary CTA → `/download/plugin` (backend 302 → GitHub API for the latest release .zip). Plugin backup link points at the GitHub `/releases/latest` HTML page so users can recover even if both the backend AND GitHub API are unreachable. NO platform spec sub-lines and NO bottom legacy notice — kept minimal. `useLatestVersion()` fetches /api/license/latest for the desktop version chip; falls back to a hardcoded value when backend is unreachable. Plugin tile has no version chip (separate release cadence from the desktop client — backend handles version discovery)
     │   ├── Pricing.tsx         # Email form + 立即购买 → /api/license/payment/create-order → Alipay redirect. Bottom of card has 2 trust lines: "软件授权 · 不含视频内容 · 无版权风险" (ink-muted) above "或 私信小红书购买 · 数字商品售出不退" (ink-faint). 小红书 link kept as small fallback. Reads PRICING constants for amount/originalAmount strikethrough/features
     │   ├── FAQ.tsx             # 8 expandable rows (chevron-rotate). First row is the differentiation Q: "这和那些卖「英语学习视频包」的有什么不同？" — explicitly names the 视频包 archetype + emphasizes software-vs-content distinction + local processing
     │   └── Footer.tsx          # © 2026 whatSub + ICP 备案号 + 联系客服
@@ -56,7 +56,7 @@ client-website/
     │   ├── useReveal.ts        # IntersectionObserver — adds .visible to .reveal items on scroll-in
     │   └── useLatestVersion.ts # fetch /api/license/latest → {version, pubDate, winUrl, macUrl} + fallback
     └── lib/
-        ├── constants.ts        # BRAND, LINKS (xhsStore, githubReleases, icpRecord), PRICING ({amount: '¥29.9', originalAmount: '¥99' (strikethrough), label: '永久授权', features: [...]})
+        ├── constants.ts        # BRAND, LINKS (xhsStore, githubReleases, githubPluginReleases, icpRecord), PRICING ({amount: '¥29.9', originalAmount: '¥99' (strikethrough), label: '永久授权', features: [...]})
         └── payment-api.ts      # Fetch wrappers for /api/license/payment/create-order + /api/license/payment/status/:no
 ```
 
@@ -177,6 +177,8 @@ nginx config lives at `/data/nginx-conf.d/whatsub.conf` (sibling to enghub's eve
 
 - **`tsconfig.tsbuildinfo` getting tracked by git.** TS incremental build cache file. Add `*.tsbuildinfo` to `.gitignore` (already done at PB5+1) and `git rm --cached client-website/tsconfig.tsbuildinfo` if it ever gets staged.
 
+- **The "bind-mounted into enghub-nginx-1" claim is now real (since 2026-05-13), but wasn't for the first days of prod.** Before 5/13, `/data/whatsub-web` and `whatsub.conf` were only injected into the nginx container via manual `docker cp` — gone the first time enghub recreated the container (which happened the morning of 5/13, taking the landing page down). Fixed by adding two bind mounts to **enghub's** docker-compose (NOT this repo's compose — enghub owns the nginx container's lifecycle). Backup of the pre-fix enghub compose is at `/opt/enghub/docker-compose.yml.bak-pre-whatsub-mount`. **Lesson:** if a cross-project service depends on bind mounts, those mounts MUST live in the compose of the project that owns the container, not in our docs as wishful thinking.
+
 - **Atomic mv-rename breaks docker bind mounts.** Don't use `mv old new; mv new.tmp new` for the `/data/whatsub-web` deploy. Use in-place extract instead. (See deploy section.)
 
 - **Hero animation not firing on second navigation.** `useReveal` uses `IntersectionObserver` with `unobserve` after first intersection. If the user scrolls the Hero out and back in, it stays visible (the `.visible` class persists). Intentional — re-firing the fade-in on every scroll-in is gimmicky.
@@ -212,6 +214,7 @@ nginx config lives at `/data/nginx-conf.d/whatsub.conf` (sibling to enghub's eve
 | Tweak success-page polling | `src/app/payment/success/page.tsx` — `POLL_INTERVAL_MS` (1500ms) and `POLL_TIMEOUT_MS` (60000ms) constants near the top |
 | Update support contact link on timeout | `src/app/payment/success/page.tsx` — the `<a href="...小红书...">` inside the `'timeout'` branch (currently hard-coded; could later pull from `LINKS.supportXhs` in constants) |
 | Change 小红书 store URL | `src/lib/constants.ts` — `LINKS.xhsStore` |
+| Change plugin download fallback URL | `src/lib/constants.ts` — `LINKS.githubPluginReleases` (the small "GitHub 备用下载" link under the plugin tile). The PRIMARY route `/download/plugin` lives in the license backend (`whatsub-license/src/routes/download.ts`) — go there if the GitHub-API-based redirect itself breaks |
 | Add a new section | new component in `src/components/` + import + render in `src/app/page.tsx`. If it should appear in the nav, add an entry to `Nav`'s links prop |
 | Tune brand colors | edit all 3: `tailwind.config.ts` + `src/app/globals.css` + `src/lib/constants.ts` |
 | Adjust scroll-reveal timing | `src/app/globals.css` (transition duration) + `src/hooks/useReveal.ts` (IntersectionObserver threshold/rootMargin) |
