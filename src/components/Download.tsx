@@ -109,11 +109,18 @@ export function Download() {
           <div className="mb-6 flex items-start gap-3 md:mb-0">
             <Puzzle className="mt-0.5 h-7 w-7 text-[--ink-soft]" strokeWidth={1.5} />
             <div>
-              <h3 className="text-2xl font-bold leading-tight text-ink">
-                配套浏览器插件
-              </h3>
+              <div className="flex items-baseline gap-2">
+                <h3 className="text-2xl font-bold leading-tight text-ink">
+                  配套浏览器插件
+                </h3>
+                {/* Free-to-use signal — the plugin is gratis; only the */}
+                {/* desktop client + corpus access are license-gated. */}
+                <span className="rounded-full bg-accent/15 px-2 py-0.5 text-xs font-semibold text-accent">
+                  免费
+                </span>
+              </div>
               <p className="mt-1 text-sm text-[--ink-muted]">
-                Chrome / Edge 扩展 · 搭配桌面端 · YouTube 双语字幕 + 任意网页划词收藏
+                完全免费 · Chrome / Edge 扩展 · YouTube 双语字幕 + 任意网页划词收藏
               </p>
               <a
                 href={LINKS.githubPluginReleases}
