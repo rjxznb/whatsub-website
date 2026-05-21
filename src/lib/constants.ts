@@ -31,9 +31,13 @@ export const LINKS = {
   githubReleases: 'https://github.com/rjxznb/whatsub-releases/releases',
   jihulabReleases: 'https://jihulab.com/rjxznb-group/whatsub-release/-/releases',
 
-  // Companion browser extension releases (no jihulab mirror — GitHub only).
-  // Backup target when /download/plugin (server-side GitHub API redirect)
-  // is unreachable; lands the user on the release page to pick the .zip.
+  // Companion browser extension — primary download path is server-side
+  // (/download/plugin on the license backend) which now resolves to the
+  // JihuLab Package Registry first and falls back to GitHub. The two
+  // links below are user-facing browse pages in case both the redirect
+  // chain AND the underlying APIs are unreachable — they land the user
+  // on a page where they can pick a .zip by hand.
+  jihulabPluginPackages: 'https://jihulab.com/rjxznb/whatsub-plugin/-/packages',
   githubPluginReleases: 'https://github.com/rjxznb/whatsub-plugin/releases/latest',
 
   // Customer support — same xhs profile for now.
