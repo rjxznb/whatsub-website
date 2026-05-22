@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { ArrowDownToLine, Github, Puzzle } from 'lucide-react';
 import { AppleLogo, WindowsLogo } from '@/components/Icons';
 import { useLatestVersion } from '@/hooks/useLatestVersion';
@@ -120,16 +121,24 @@ export function Download() {
                 </span>
               </div>
               <p className="mt-1 text-sm text-[--ink-muted]">
-                完全免费 · Chrome / Edge 扩展 · YouTube 双语字幕 + 任意网页划词收藏
+                完全免费 · Chrome / Edge 扩展 · YouTube 双语字幕 + 划词收藏,自动同步进多端语料库
               </p>
-              <a
-                href={LINKS.githubPluginReleases}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 inline-flex items-center gap-2 font-mono text-xs text-[--ink-faint] transition-colors hover:text-[--ink-muted]"
-              >
-                <Github className="h-3.5 w-3.5" strokeWidth={1.5} /> GitHub 备用下载
-              </a>
+              <div className="mt-2 flex flex-wrap items-center gap-4">
+                <Link
+                  href="/plugin"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-accent transition-colors hover:text-ink"
+                >
+                  了解插件功能 →
+                </Link>
+                <a
+                  href={LINKS.githubPluginReleases}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 font-mono text-xs text-[--ink-faint] transition-colors hover:text-[--ink-muted]"
+                >
+                  <Github className="h-3.5 w-3.5" strokeWidth={1.5} /> GitHub 备用下载
+                </a>
+              </div>
             </div>
           </div>
           <a

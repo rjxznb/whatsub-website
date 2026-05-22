@@ -4,3 +4,7 @@ out/
 .env*
 *.log
 *.tsbuildinfo
+
+# Raw promo material + internal ops docs — not part of the deployed site
+/宣传demo/
+/小红书运营手册.md

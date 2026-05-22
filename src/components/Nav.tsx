@@ -1,5 +1,7 @@
 'use client';
 
+import { PlatformsDropdown } from './PlatformsDropdown';
+
 type NavLink = { id: string; label: string };
 
 const DEFAULT_LINKS: NavLink[] = [
@@ -23,28 +25,35 @@ export function Nav({ links = DEFAULT_LINKS }: { links?: NavLink[] }) {
       }}
     >
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-6 sm:px-10 lg:px-16">
-        <a
-          href="#top"
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           className="relative flex items-center"
-          aria-label="whatSub"
+          aria-label="whatSub 首页"
         >
-          {/* White light glow behind the wordmark */}
+          {/* White light glow behind the wordmark — concentrated near the
+              wordmark center, fades out before reaching the edges */}
           <span
             aria-hidden="true"
             className="pointer-events-none absolute"
             style={{
-              inset: '-14px -10px',
+              inset: '-2px -2px',
               background:
-                'radial-gradient(ellipse at center, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.18) 45%, transparent 75%)',
-              filter: 'blur(10px)',
+                'radial-gradient(ellipse at center, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.06) 30%, transparent 55%)',
+              filter: 'blur(4px)',
             }}
           />
+          {/* wordmark PNG has a baked-in BLACK background (no alpha in
+              the source). mix-blend-mode: screen makes black pixels
+              transparent (screen(0, x) = x), so only the white "what"
+              + blue "Sub" letterforms render — the glow span behind
+              shows through where the black was. */}
           <img
             src="/whatsub-wordmark.png"
             alt="whatSub"
-            className="relative block h-9 w-auto"
+            className="relative block h-9 w-auto mix-blend-screen"
           />
-        </a>
+        </button>
         <div className="flex items-center gap-7">
           <ul className="hidden md:flex items-center gap-7 text-sm text-[--ink-soft]">
             {links.map((l) => (
@@ -57,6 +66,9 @@ export function Nav({ links = DEFAULT_LINKS }: { links?: NavLink[] }) {
                 </button>
               </li>
             ))}
+            <li>
+              <PlatformsDropdown />
+            </li>
           </ul>
           <button
             type="button"

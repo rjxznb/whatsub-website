@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { LINKS } from '@/lib/constants';
 
 export function Footer() {
@@ -5,7 +6,7 @@ export function Footer() {
     <footer className="border-t border-[--hairline] bg-bg px-6 py-10 sm:px-10 lg:px-16">
       <div className="mx-auto flex max-w-[1200px] flex-col items-start gap-3 text-xs text-[--ink-faint] sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-3">
-          <span>&copy; 2026 whatSub</span>
+          <span>Copyright &copy; 2026 whatSub</span>
           <a
             href={LINKS.icpUrl}
             target="_blank"
@@ -24,8 +25,18 @@ export function Footer() {
           >
             联系客服
           </a>
-          <span>Terms</span>
-          <span>Privacy</span>
+          <Link
+            href="/terms"
+            className="transition-colors hover:text-[--ink-muted]"
+          >
+            条款与条件
+          </Link>
+          <Link
+            href="/privacy"
+            className="transition-colors hover:text-[--ink-muted]"
+          >
+            隐私政策
+          </Link>
         </div>
       </div>
     </footer>

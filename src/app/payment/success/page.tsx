@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { getPaymentStatus, type PaymentStatus } from '@/lib/payment-api';
+import { LINKS } from '@/lib/constants';
 
 const POLL_INTERVAL_MS = 1500;
 const POLL_TIMEOUT_MS = 60_000;
@@ -109,7 +110,7 @@ function SuccessInner() {
         <p className="text-[--ink-soft]">
           如已完成支付且 5 分钟后仍未收到邮件，请{' '}
           <a
-            href="https://www.xiaohongshu.com/user/profile/67f1f5dc000000000e0119bf"
+            href={LINKS.supportXhs}
             target="_blank"
             rel="noopener noreferrer"
             className="text-accent hover:underline"

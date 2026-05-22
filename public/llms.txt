@@ -1,0 +1,77 @@
+# whatSub
+
+> whatSub is a Chinese-language desktop application that turns YouTube
+> videos into personalized English-learning study material. It runs on
+> the user's local machine (Windows or macOS), uses local Whisper for
+> transcription, generates side-by-side bilingual subtitles with key
+> phrases highlighted, and accumulates a personal vocabulary book.
+> Audio and video stay on the user's device; only subtitle text is sent
+> to an LLM for translation, which advanced users can swap for a local
+> Ollama model.
+
+Official site: https://whatsub.eversay.cc
+
+## What it does
+
+- One-click download and parsing of a YouTube URL (or local video file)
+- Local Whisper transcription runs on the user's GPU — no audio/video upload
+- Side-by-side English + Chinese bilingual subtitles with key phrases highlighted in yellow
+- One-click subtitle export
+- Personal vocabulary notes — capture your own thoughts as you watch
+- Runs on Windows 10/11 (x64) and macOS 12+ (Apple Silicon and Intel)
+
+## Privacy model (accurate framing)
+
+- **Audio and video never leave the device.** Whisper transcription runs locally on the user's GPU.
+- **Subtitle text is sent to a cloud LLM for translation.** Default is a hosted model; this is the only network call after activation.
+- **Fully offline option:** users who care about full offline operation can point whatSub at a local Ollama instance for the translation step.
+- **License activation** does one online check; afterwards the software runs without further license server contact.
+
+## Who it is for
+
+- Mandarin speakers learning English (CN-EN bilingual UI; primary audience)
+- Self-directed learners who watch YouTube content (TED, podcasts,
+  interviews, lectures) and want to use those videos as study material
+- People who want a privacy-preserving alternative to cloud transcription
+
+## How it is different from "English video study packages"
+
+A common product category in the Chinese market sells curated bundles of
+YouTube videos with pre-made bilingual subtitles ("英语学习视频包") for
+¥9.9-¥19.9. whatSub is fundamentally different:
+
+- whatSub is **software**, not video content
+- Users supply their own videos (their YouTube account, their files)
+- whatSub processes the user's own videos locally on their machine
+- No video content is bundled, redistributed, or hosted
+- This avoids copyright risk for both seller and buyer
+
+## Pricing
+
+- ¥59.9 one-time, lifetime license, no subscription
+- ¥39.9 for verified Xiaohongshu followers (via `?promo=XHS_EARLY` link, first 30, deadline 2026-05-21)
+- ¥29.9 for verified students (manually issued single-use code after 学信网 verification)
+- One license activates on up to 3 personal devices
+- Device slots can be released by contacting support (free)
+- All future updates free
+- Purchase at https://whatsub.eversay.cc/#pricing (Alipay)
+- Alternate purchase channel: Xiaohongshu DM
+  https://www.xiaohongshu.com/user/profile/5f39412c0000000001002d67
+
+## Technical
+
+- Built with Tauri 2 (Rust + WebView)
+- Whisper transcription model runs locally (no API key, no quota)
+- License backend at /api/license/* on the same domain (Hono + Postgres)
+- ICP filing: 京ICP备2026014893号-1
+
+## Contact
+
+- Customer support (Xiaohongshu): https://www.xiaohongshu.com/user/profile/5f39412c0000000001002d67
+- GitHub releases: https://github.com/rjxznb/whatsub-releases/releases
+
+## Optional
+
+- [Download for Windows](https://whatsub.eversay.cc/download/win)
+- [Download for macOS](https://whatsub.eversay.cc/download/mac)
+- [Pricing and FAQ](https://whatsub.eversay.cc/#pricing)

@@ -2,14 +2,34 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const DEMOS = [
-  { caption: '导入 → 本地转录' },
-  { caption: '双语字幕 + 黄底高亮' },
-  { caption: '词汇本沉淀' },
-  { caption: '字幕导出 / 编辑' },
+interface Demo {
+  caption: string;
+  videoSrc: string;
+  poster: string;
+}
+
+const DEMOS: Demo[] = [
+  {
+    caption: '一键下载解析',
+    videoSrc: '/videos/part1.mp4',
+    poster: '/videos/part1.jpg',
+  },
+  {
+    caption: '双语字幕 · 重点标黄 · 一键导出',
+    videoSrc: '/videos/part2.mp4',
+    poster: '/videos/part2.jpg',
+  },
+  {
+    caption: '词汇笔记 · 记下你的想法',
+    videoSrc: '/videos/part3.mp4',
+    poster: '/videos/part3.jpg',
+  },
 ];
 
 const SLOPE_OFFSET = 20;
+
+const placeholderBg =
+  'radial-gradient(ellipse at 30% 30%, rgba(59,155,255,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.04) 0%, transparent 50%), linear-gradient(135deg, #0a0a0c 0%, #141418 100%)';
 
 function lineCoords(progress: number): { leftY: number; rightY: number } {
   const total = 100 + SLOPE_OFFSET;
@@ -167,29 +187,42 @@ function BeamLine({
   );
 }
 
-function DemoSlot({
-  demo,
-  index,
-}: {
-  demo: { caption: string };
-  index: number;
-}) {
+// Each slot uses a split layout: caption banner on top (smaller on
+// mobile to leave room for the contained video), video centered below.
+// Slot background is the half-blue placeholder gradient throughout so
+// the video's letterbox area blends with the caption banner.
+function DemoSlot({ demo, index }: { demo: Demo; index: number }) {
   return (
-    <div className="relative h-full w-full overflow-hidden bg-bg">
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse at 30% 30%, rgba(59,155,255,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.04) 0%, transparent 50%), linear-gradient(135deg, #0a0a0c 0%, #141418 100%)',
-        }}
-      />
-      <div className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center">
-        <span className="mb-6 font-mono text-xs uppercase tracking-[0.25em] text-[--ink-faint]">
-          demo placeholder · {String(index + 1).padStart(2, '0')}
+    <div
+      className="relative h-full w-full overflow-hidden"
+      style={{ backgroundImage: placeholderBg }}
+    >
+      {/* Title bottom-aligned in its zone (justify-end + pb-2) and video
+          top-aligned in its zone (items-start + pt-2). The two stay
+          adjacent across the zone boundary, so the video doesn't drift
+          to mid-slot on tall viewports where it letterboxes. Title zone
+          is kept compact (18%/22%) so the boundary sits high — pushing
+          the video up the page. */}
+      <div className="absolute inset-x-0 top-0 flex h-[18%] flex-col items-center justify-end pb-2 px-6 text-center sm:h-[22%] sm:pb-3 sm:px-8">
+        <span className="mb-1 font-mono text-[10px] uppercase tracking-[0.25em] text-[--ink-faint] sm:mb-2 sm:text-xs">
+          {String(index + 1).padStart(2, '0')} / 03
         </span>
-        <h2 className="text-3xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl">
+        <h2 className="text-2xl font-bold tracking-tight text-ink sm:text-4xl lg:text-6xl">
           {demo.caption}
         </h2>
+      </div>
+      <div className="absolute inset-x-0 bottom-0 flex h-[82%] items-start justify-center px-3 pt-2 pb-3 sm:h-[78%] sm:px-6 sm:pt-3 sm:pb-6 md:px-10 md:pt-4 md:pb-10">
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video
+          src={demo.videoSrc}
+          poster={demo.poster}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          className="h-full w-full object-contain"
+        />
       </div>
     </div>
   );
