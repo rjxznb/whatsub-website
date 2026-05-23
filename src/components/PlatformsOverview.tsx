@@ -14,6 +14,13 @@ import {
   Lightbulb,
 } from 'lucide-react';
 import { useReveal } from '@/hooks/useReveal';
+import { PlatformsDropdown } from './PlatformsDropdown';
+
+const NAV_LINKS = [
+  { id: 'scenarios', label: '按场景选' },
+  { id: 'best-practices', label: '最佳实践' },
+  { id: 'capabilities', label: '各端能力' },
+];
 
 interface Platform {
   Icon: typeof Monitor;
@@ -85,9 +92,12 @@ const SCENARIOS: Scenario[] = [
 export function PlatformsOverview() {
   const ref = useReveal<HTMLDivElement>();
 
+  const scrollTo = (id: string) =>
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+
   return (
     <div ref={ref} className="bg-bg text-ink">
-      {/* minimal sub-page nav */}
+      {/* page nav: logo home + section anchors + platforms dropdown */}
       <nav
         className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08]"
         style={{
@@ -100,20 +110,34 @@ export function PlatformsOverview() {
           <Link href="/" className="flex items-center" aria-label="whatSub 首页">
             <img src="/whatsub-wordmark.png" alt="whatSub" className="block h-9 w-auto mix-blend-screen" />
           </Link>
-          <Link href="/" className="text-sm text-[--ink-soft] transition-colors hover:text-ink">
-            ← 返回首页
-          </Link>
+          <div className="flex items-center gap-7">
+            <ul className="hidden items-center gap-7 text-sm text-[--ink-soft] md:flex">
+              {NAV_LINKS.map((l) => (
+                <li key={l.id}>
+                  <button
+                    onClick={() => scrollTo(l.id)}
+                    className="transition-colors hover:text-ink"
+                  >
+                    {l.label}
+                  </button>
+                </li>
+              ))}
+              <li>
+                <PlatformsDropdown />
+              </li>
+            </ul>
+            <Link href="/" className="text-sm text-[--ink-soft] transition-colors hover:text-ink">
+              ← 返回首页
+            </Link>
+          </div>
         </div>
       </nav>
 
-      {/* Compact page header — no marketing hero, just a title + framing line */}
+      {/* Compact page header — no marketing hero, just the title + framing line */}
       <header className="px-6 pt-28 pb-10 sm:px-10 lg:px-16 lg:pt-36">
         <div className="mx-auto max-w-[1100px]">
-          <div className="reveal mb-3 font-mono text-xs uppercase tracking-[0.25em] text-accent">
+          <h1 className="reveal mb-4 font-sans text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
             平台与集成
-          </div>
-          <h1 className="reveal reveal-delay-1 mb-4 max-w-[760px] text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-            该用哪个端,取决于你想怎么学
           </h1>
           <p className="reveal reveal-delay-1 max-w-[640px] text-[15px] leading-[1.7] text-[--ink-soft]">
             whatSub 现有桌面客户端、浏览器插件两个入口(移动端即将上线),它们共享同一个云端语料库。下面按场景帮你选,并说明它们怎么串在一起。
@@ -122,9 +146,9 @@ export function PlatformsOverview() {
       </header>
 
       {/* ── 场景 → 平台 ── */}
-      <section className="px-6 py-10 sm:px-10 lg:px-16">
+      <section id="scenarios" className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="reveal mb-6 text-xl font-bold tracking-tight">按场景选</h2>
+          <h2 className="reveal mb-6 text-2xl font-bold tracking-tight sm:text-3xl">按场景选</h2>
           <div className="reveal overflow-hidden rounded-xl border border-[--hairline]">
             {SCENARIOS.map((s, i) => (
               <div
@@ -156,7 +180,7 @@ export function PlatformsOverview() {
       {/* ── 它们如何协作 (relationship) ── */}
       <section className="px-6 py-16 sm:px-10 sm:py-24 lg:px-16">
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="reveal mb-3 text-xl font-bold tracking-tight">它们如何串在一起</h2>
+          <h2 className="reveal mb-3 text-2xl font-bold tracking-tight sm:text-3xl">它们如何串在一起</h2>
           <p className="reveal reveal-delay-1 mb-12 max-w-[640px] text-[15px] leading-[1.7] text-[--ink-soft]">
             三个入口分工不同,但都读写<strong className="text-ink">同一个云端个人语料库</strong>——这是把它们连起来的纽带。你在任何一端划词收藏,换到别的端打开立刻能看到。
           </p>
@@ -187,7 +211,7 @@ export function PlatformsOverview() {
       {/* ── 最佳实践:三端配合学英语 ── */}
       <section id="best-practices" className="scroll-mt-20 px-6 py-16 sm:px-10 sm:py-24 lg:px-16">
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="reveal mb-3 text-xl font-bold tracking-tight">最佳实践:怎么配合,把英语学透</h2>
+          <h2 className="reveal mb-3 text-2xl font-bold tracking-tight sm:text-3xl">最佳实践:怎么配合,把英语学透</h2>
           <p className="reveal reveal-delay-1 mb-12 max-w-[640px] text-[15px] leading-[1.7] text-[--ink-soft]">
             三个端各有所长。把它们按"精学 → 泛刷 → 复习"串起来,既有深度又有量,生词还能反复回炉。
           </p>
@@ -209,7 +233,7 @@ export function PlatformsOverview() {
               Icon={RotateCcw}
               n="复习"
               tool="多端同步"
-              body="精学、泛刷收的词都进同一个云端语料库。碎片时间用插件弹窗翻看,从 YouTube 划的词点时间戳跳回原句重听。"
+              body="精学、泛刷收的词都进同一个云端语料库。碎片时间用插件弹窗随时翻看,移动端上线后还能在手机上随身复习;从 YouTube 划的词点时间戳跳回原句重听。"
             />
           </div>
 
@@ -237,9 +261,9 @@ export function PlatformsOverview() {
       </section>
 
       {/* ── 平台详情卡 (reference) ── */}
-      <section className="px-6 pb-24 sm:px-10 sm:pb-32 lg:px-16">
+      <section id="capabilities" className="scroll-mt-20 px-6 pb-24 sm:px-10 sm:pb-32 lg:px-16">
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="reveal mb-6 text-xl font-bold tracking-tight">各端能力</h2>
+          <h2 className="reveal mb-6 text-2xl font-bold tracking-tight sm:text-3xl">各端能力</h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {PLATFORMS.map((p, i) => (
               <div
