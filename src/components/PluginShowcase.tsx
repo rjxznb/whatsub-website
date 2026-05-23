@@ -8,7 +8,6 @@ import {
   MousePointerClick,
   Library,
   Download as DownloadIcon,
-  Puzzle,
   ChevronDown,
   KeyRound,
 } from 'lucide-react';
@@ -236,23 +235,30 @@ export function PluginShowcase() {
         </div>
       </nav>
 
-      {/* ── Hero ── */}
+      {/* ── Hero (mirrors the homepage whatsub signature hero; plugin-specific copy) ── */}
       <section className="relative overflow-hidden px-6 pt-32 pb-20 sm:px-10 lg:px-16 lg:pt-44 lg:pb-28">
         <div className="mx-auto max-w-[1100px] text-center">
-          <div className="reveal mb-5 inline-flex items-center gap-2 rounded-full border border-[--hairline] bg-white/[0.04] px-3 py-1 text-xs text-[--ink-muted]">
-            <Puzzle className="h-3.5 w-3.5 text-accent" strokeWidth={2} />
-            whatSub 浏览器插件 · Chrome / Edge
-          </div>
           <h1
-            className="reveal reveal-delay-1 mb-6 font-sans font-bold leading-[1.05] tracking-[-0.01em] text-ink"
-            style={{ fontSize: 'clamp(40px, 8vw, 96px)' }}
+            className="reveal mb-12 font-display font-bold leading-none tracking-[-0.01em] text-ink"
+            style={{ fontSize: 'clamp(48px, 13vw, 180px)' }}
           >
-            在 YouTube 上,<br />看懂<span className="text-accent">每一句</span>英文
+            hey,&nbsp;what
+            <span className="text-ink">’</span>
+            <span className="inline-block text-accent cursor-pointer transition-transform duration-300 ease-out [text-shadow:0_0_32px_var(--accent-glow)] hover:scale-125 hover:[text-shadow:0_0_24px_rgba(255,255,255,0.85),0_0_48px_rgba(255,255,255,0.4)]">
+              Sub
+            </span>
+            ?
           </h1>
-          <p className="reveal reveal-delay-2 mx-auto mb-9 max-w-[620px] text-[clamp(16px,2vw,20px)] leading-[1.6] text-[--ink-soft]">
-            双语字幕 + AI 重点标黄 + 跨网页划词收藏。看视频、读外刊时随手收下生词,自动同步进你的私人语料库,插件、客户端、网页随时复习。
+
+          <p className="reveal reveal-delay-1 mx-auto mb-4 max-w-[640px] text-[clamp(16px,2vw,22px)] leading-[1.55] text-[--ink-soft]">
+            让一句字幕，慢慢成为你的英语
           </p>
-          <div className="reveal reveal-delay-3 flex flex-wrap items-center justify-center gap-3">
+
+          <p className="reveal reveal-delay-1 mx-auto mb-10 max-w-[620px] text-[clamp(13px,1.5vw,16px)] leading-[1.6] text-[--ink-muted]">
+            浏览器插件版 · YouTube 双语字幕 + AI 重点标黄 + 跨网页划词收藏，自动同步进你的私人语料库
+          </p>
+
+          <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3">
             <a
               href={PLUGIN_DOWNLOAD}
               className="inline-flex h-12 items-center gap-2.5 rounded-lg bg-white px-7 text-sm font-semibold text-bg transition-transform hover:-translate-y-px"
@@ -267,9 +273,6 @@ export function PluginShowcase() {
               看桌面客户端
             </Link>
           </div>
-        </div>
-        <div className="reveal reveal-delay-3 mx-auto mt-14 max-w-[960px]">
-          <MediaPlaceholder label="插件总览 · YouTube 视频页双语侧栏 + 底部浮层" aspect="16 / 9" />
         </div>
       </section>
 
