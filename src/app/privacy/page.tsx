@@ -23,18 +23,26 @@ export default function PrivacyPage() {
             隐私政策
           </h1>
           <p className="mb-12 font-mono text-xs text-[--ink-faint]">
-            最后更新：2026-05-13
+            最后更新：2026-05-24
           </p>
 
           <div className="space-y-10 text-[15px] leading-[1.8] text-[--ink-soft]">
             <p>
-              whatSub 是一款桌面应用，专注于把 YouTube 视频处理成英语学习材料。本页面说明我们收集什么信息、怎么使用、不会做什么。
+              whatSub 包含一款桌面应用和一款 iOS 应用，专注于把 YouTube 等视频处理成英语学习材料。本页面说明我们（桌面端与 iOS 端）收集什么信息、怎么使用、不会做什么。
             </p>
 
             <Section title="一、我们收集的信息">
               <p>
                 <strong className="text-ink">邮箱地址。</strong>
-                你在购买时填写，用来给你发送授权码和必要通知。
+                桌面端在购买时填写；iOS 端用邮箱 + 一次性验证码（OTP）登录。用来识别你的账号、发送授权码和必要通知。
+              </p>
+              <p>
+                <strong className="text-ink">iOS 内购记录。</strong>
+                你在 iOS 应用内购买（一次性买断或订阅）时，付款由 <strong className="text-ink">Apple App Store</strong> 处理——我们看不到你的 Apple 账户或银行卡信息。我们仅从 Apple 收到一个交易凭证（originalTransactionId）+ 商品 ID + 到期时间，用来记录"这个邮箱账号已购买/已订阅"，以便在你的设备间同步解锁状态。
+              </p>
+              <p>
+                <strong className="text-ink">云端学习数据（登录后）。</strong>
+                登录后，你保存到云端的字幕库（library）与语料库条目（短语、释义、用法）会存储在我们的服务器，用来在你的设备间同步。这些是你主动保存的学习内容，不含视频或音频文件本身。iOS 端还会在本地记录免费试用的开始时间（按账号），用于判断 24 小时试用是否结束。
               </p>
               <p>
                 <strong className="text-ink">支付订单号。</strong>
@@ -76,7 +84,8 @@ export default function PrivacyPage() {
             <Section title="四、第三方服务">
               <p>whatSub 的运转依赖以下几个第三方服务，它们各自对你的数据有自己的隐私政策：</p>
               <ul className="list-disc space-y-2 pl-6">
-                <li><strong className="text-ink">支付宝</strong>——处理付款。</li>
+                <li><strong className="text-ink">支付宝</strong>——处理桌面端付款。</li>
+                <li><strong className="text-ink">Apple App Store / App 内购买</strong>——处理 iOS 端付款与订阅，并向我们提供交易凭证以同步解锁状态。</li>
                 <li><strong className="text-ink">大模型服务商</strong>（OpenAI / DeepSeek / 智谱 / Claude / Kimi / Gemini / 通义 / SiliconFlow / 自部署 Ollama 等，由你自选）——翻译你的字幕文本。</li>
                 <li><strong className="text-ink">QQ 邮箱（SMTP）</strong>——发送授权码邮件。</li>
                 <li><strong className="text-ink">阿里云（北京）</strong>——我们的服务器托管商。</li>
