@@ -13,14 +13,18 @@ import {
 import { useReveal } from '@/hooks/useReveal';
 import { PlatformsDropdown } from './PlatformsDropdown';
 
-// Reused from DemoDiagonal — the half-blue placeholder gradient. Stand-in
-// for real screenshots/GIFs until they're recorded; swap <MediaPlaceholder>
-// for a <video>/<img> later without touching layout.
-const placeholderBg =
-  'radial-gradient(ellipse at 30% 30%, rgba(59,155,255,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.04) 0%, transparent 50%), linear-gradient(135deg, #0a0a0c 0%, #141418 100%)';
-
 const PLUGIN_DOWNLOAD = '/download/plugin';
 
+// Hero / CTA buttons — kept identical to the homepage (HeroSlim) buttons so
+// both pages share one button component: white primary + outlined secondary.
+const BTN_PRIMARY =
+  'inline-flex h-12 items-center gap-2.5 rounded-lg bg-white px-7 text-sm font-semibold text-bg transition-transform hover:-translate-y-px';
+const BTN_SECONDARY =
+  'inline-flex h-12 items-center gap-2.5 rounded-lg border border-[--hairline-strong] bg-white/[0.04] px-7 text-sm font-semibold text-ink transition-transform hover:-translate-y-px';
+
+// Flat placeholder standing in for real screenshots/GIFs until they're
+// recorded; swap <MediaPlaceholder> for a <video>/<img> later. No gradient —
+// once real imagery lands it carries the visual weight (Tesla-style).
 function MediaPlaceholder({
   label,
   aspect = '16 / 10',
@@ -30,11 +34,11 @@ function MediaPlaceholder({
 }) {
   return (
     <div
-      className="relative w-full overflow-hidden rounded-xl border border-[--hairline]"
-      style={{ aspectRatio: aspect, backgroundImage: placeholderBg }}
+      className="relative w-full overflow-hidden rounded bg-[--bg-elev]"
+      style={{ aspectRatio: aspect }}
     >
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center">
-        <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[--ink-faint]">
+        <span className="font-mono text-[10px] tracking-[0.1em] text-[--ink-faint]">
           演示占位
         </span>
         <span className="text-sm text-[--ink-muted]">{label}</span>
@@ -178,7 +182,7 @@ export function PluginShowcase() {
     <div ref={ref} className="bg-bg text-ink">
       {/* ── page nav: logo home + section anchors + download CTA ── */}
       <nav
-        className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08]"
+        className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06]"
         style={{
           backgroundColor: 'rgba(0, 0, 0, 0.55)',
           backdropFilter: 'blur(30px) saturate(180%)',
@@ -199,7 +203,7 @@ export function PluginShowcase() {
                 <li key={l.id}>
                   <button
                     onClick={() => scrollTo(l.id)}
-                    className="transition-colors hover:text-ink"
+                    className="transition-colors duration-300 hover:text-ink"
                   >
                     {l.label}
                   </button>
@@ -221,7 +225,7 @@ export function PluginShowcase() {
         </div>
       </nav>
 
-      {/* ── Hero (mirrors the homepage whatsub signature hero; plugin-specific copy) ── */}
+      {/* ── Hero (signature kept identical to the homepage; buttons follow the new system) ── */}
       <section className="relative overflow-hidden px-6 pt-32 pb-20 sm:px-10 lg:px-16 lg:pt-44 lg:pb-28">
         <div className="mx-auto max-w-[1100px] text-center">
           <h1
@@ -245,17 +249,11 @@ export function PluginShowcase() {
           </p>
 
           <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href={PLUGIN_DOWNLOAD}
-              className="inline-flex h-12 items-center gap-2.5 rounded-lg bg-white px-7 text-sm font-semibold text-bg transition-transform hover:-translate-y-px"
-            >
-              <DownloadIcon className="h-4 w-4" strokeWidth={2.5} />
+            <a href={PLUGIN_DOWNLOAD} className={BTN_PRIMARY}>
+              <DownloadIcon className="h-4 w-4" strokeWidth={2} />
               下载插件
             </a>
-            <Link
-              href="/"
-              className="inline-flex h-12 items-center gap-2.5 rounded-lg border border-[--hairline-strong] bg-white/[0.04] px-7 text-sm font-semibold text-ink transition-transform hover:-translate-y-px"
-            >
+            <Link href="/" className={BTN_SECONDARY}>
               看桌面客户端
             </Link>
           </div>
@@ -275,11 +273,11 @@ export function PluginShowcase() {
                 }`}
               >
                 <div className="flex-1">
-                  <div className="mb-3 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.15em] text-accent">
-                    <f.Icon className="h-4 w-4" strokeWidth={2} />
+                  <div className="mb-3 inline-flex items-center gap-2 text-xs font-medium text-[--ink-muted]">
+                    <f.Icon className="h-4 w-4 text-[--ink-soft]" strokeWidth={1.75} />
                     {f.kicker}
                   </div>
-                  <h3 className="mb-4 font-sans text-2xl font-bold tracking-tight text-ink sm:text-3xl lg:text-4xl">
+                  <h3 className="mb-4 font-sans text-2xl font-medium text-ink sm:text-3xl lg:text-4xl">
                     {f.title}
                   </h3>
                   <p className="max-w-[480px] text-[15px] leading-[1.7] text-[--ink-soft]">
@@ -303,7 +301,7 @@ export function PluginShowcase() {
       {/* ── Quick start (numbered, detailed, incl. API key setup) ── */}
       <section id="quickstart" className="scroll-mt-20 px-6 py-24 sm:px-10 sm:py-32 lg:px-16">
         <div className="mx-auto max-w-[820px]">
-          <h2 className="reveal mb-3 text-center font-sans text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="reveal mb-3 text-center font-sans text-3xl font-medium sm:text-4xl">
             快速开始
           </h2>
           <p className="reveal reveal-delay-1 mx-auto mb-14 max-w-[520px] text-center text-sm text-[--ink-muted]">
@@ -314,7 +312,7 @@ export function PluginShowcase() {
               <li key={s.title} className="reveal flex gap-4 sm:gap-6">
                 {/* number badge + connector line down to the next step */}
                 <div className="flex flex-col items-center">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-sm font-semibold text-accent">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.06] text-sm font-medium text-[--ink-soft]">
                     {i + 1}
                   </div>
                   {i < SETUP_STEPS.length - 1 && (
@@ -322,17 +320,17 @@ export function PluginShowcase() {
                   )}
                 </div>
                 <div className="flex-1 pb-2">
-                  <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-ink">
+                  <h3 className="mb-3 flex items-center gap-2 text-lg font-medium text-ink">
                     {s.title}
                     {s.title.includes('API Key') && (
-                      <KeyRound className="h-4 w-4 text-accent" strokeWidth={2} />
+                      <KeyRound className="h-4 w-4 text-[--ink-soft]" strokeWidth={1.75} />
                     )}
                   </h3>
                   <ul className="space-y-2">
                     {s.lines.map((line, li) => (
                       <li
                         key={li}
-                        className="flex items-start gap-2 text-sm leading-relaxed text-[--ink-soft]"
+                        className="flex items-start gap-2.5 text-sm leading-relaxed text-[--ink-soft]"
                       >
                         <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[--ink-faint]" />
                         {line}
@@ -340,8 +338,8 @@ export function PluginShowcase() {
                     ))}
                   </ul>
                   {s.tip && (
-                    <div className="mt-3 rounded-lg border border-accent/30 bg-accent/[0.07] px-3 py-2 text-xs leading-relaxed text-[--ink-soft]">
-                      <span className="font-semibold text-accent">提示 </span>
+                    <div className="mt-3 rounded bg-white/[0.04] px-3 py-2 text-xs leading-relaxed text-[--ink-soft]">
+                      <span className="font-medium text-ink">提示 </span>
                       {s.tip}
                     </div>
                   )}
@@ -355,16 +353,16 @@ export function PluginShowcase() {
       {/* ── Scenarios ── */}
       <section className="px-6 pb-24 sm:px-10 sm:pb-32 lg:px-16">
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="reveal mb-12 text-center font-sans text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="reveal mb-12 text-center font-sans text-3xl font-medium sm:text-4xl">
             你会这样用它
           </h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {SCENARIOS.map((s, i) => (
               <div
                 key={s.title}
-                className={`reveal reveal-delay-${i + 1} rounded-xl border border-[--hairline] bg-[--bg-elev] p-6`}
+                className={`reveal reveal-delay-${i + 1} rounded bg-[--bg-elev] p-7`}
               >
-                <h3 className="mb-2 text-lg font-semibold text-ink">{s.title}</h3>
+                <h3 className="mb-2 text-lg font-medium text-ink">{s.title}</h3>
                 <p className="text-sm leading-relaxed text-[--ink-muted]">{s.body}</p>
               </div>
             ))}
@@ -375,10 +373,10 @@ export function PluginShowcase() {
       {/* ── FAQ (accordion) ── */}
       <section id="faq" className="scroll-mt-20 px-6 pb-24 sm:px-10 lg:px-16">
         <div className="mx-auto max-w-[820px]">
-          <h2 className="reveal mb-10 text-center font-sans text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="reveal mb-10 text-center font-sans text-3xl font-medium sm:text-4xl">
             常见问题
           </h2>
-          <div className="reveal divide-y divide-[--hairline] overflow-hidden rounded-xl border border-[--hairline]">
+          <div className="reveal divide-y divide-[--hairline] overflow-hidden rounded bg-[--bg-elev]">
             {FAQ.map((item) => (
               <FaqItem key={item.q} q={item.q} a={item.a} />
             ))}
@@ -386,41 +384,21 @@ export function PluginShowcase() {
         </div>
       </section>
 
-      {/* ── Social proof (placeholder) ── */}
-      <section className="px-6 pb-24 sm:px-10 lg:px-16">
-        <div className="mx-auto max-w-[1100px]">
-          <div className="reveal rounded-xl border border-dashed border-[--hairline-strong] bg-white/[0.02] p-10 text-center">
-            <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[--ink-faint]">
-              占位
-            </div>
-            <p className="mt-2 text-sm text-[--ink-muted]">
-              用户评价区（小红书反馈截图 / 用户数，后补）
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* ── Final CTA ── */}
       <section className="border-t border-[--hairline] px-6 py-24 text-center sm:px-10 lg:px-16">
         <div className="mx-auto max-w-[700px]">
-          <h2 className="reveal mb-5 font-sans text-3xl font-bold tracking-tight sm:text-5xl">
+          <h2 className="reveal mb-5 font-sans text-3xl font-medium sm:text-4xl">
             装上它,从看懂这一句开始
           </h2>
           <p className="reveal reveal-delay-1 mx-auto mb-9 max-w-[480px] text-[--ink-soft]">
             免费使用核心功能,配一个你自己的大模型 key 即可解锁 AI 标黄 / 重译。
           </p>
           <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href={PLUGIN_DOWNLOAD}
-              className="inline-flex h-12 items-center gap-2.5 rounded-lg bg-white px-7 text-sm font-semibold text-bg transition-transform hover:-translate-y-px"
-            >
-              <DownloadIcon className="h-4 w-4" strokeWidth={2.5} />
+            <a href={PLUGIN_DOWNLOAD} className={BTN_PRIMARY}>
+              <DownloadIcon className="h-4 w-4" strokeWidth={2} />
               下载插件
             </a>
-            <Link
-              href="/"
-              className="inline-flex h-12 items-center gap-2.5 rounded-lg border border-[--hairline-strong] bg-white/[0.04] px-7 text-sm font-semibold text-ink transition-transform hover:-translate-y-px"
-            >
+            <Link href="/" className={BTN_SECONDARY}>
               了解桌面客户端
             </Link>
           </div>
@@ -437,7 +415,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-white/[0.03]"
+        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors duration-300 hover:bg-white/[0.03]"
         aria-expanded={open}
       >
         <span className="text-[15px] font-medium text-ink">{q}</span>

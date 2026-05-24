@@ -8,6 +8,7 @@ import {
   Smartphone,
   ArrowRight,
   ArrowDown,
+  ArrowUp,
   Database,
   Telescope,
   Waves,
@@ -114,7 +115,7 @@ export function PlatformsOverview() {
     <div ref={ref} className="bg-bg text-ink">
       {/* page nav: logo home + section anchors + platforms dropdown */}
       <nav
-        className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08]"
+        className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06]"
         style={{
           backgroundColor: 'rgba(0, 0, 0, 0.55)',
           backdropFilter: 'blur(30px) saturate(180%)',
@@ -131,7 +132,7 @@ export function PlatformsOverview() {
                 <li key={l.id}>
                   <button
                     onClick={() => scrollTo(l.id)}
-                    className="transition-colors hover:text-ink"
+                    className="transition-colors duration-300 hover:text-ink"
                   >
                     {l.label}
                   </button>
@@ -141,7 +142,7 @@ export function PlatformsOverview() {
                 <PlatformsDropdown />
               </li>
             </ul>
-            <Link href="/" className="text-sm text-[--ink-soft] transition-colors hover:text-ink">
+            <Link href="/" className="text-sm text-[--ink-soft] transition-colors duration-300 hover:text-ink">
               ← 返回首页
             </Link>
           </div>
@@ -149,9 +150,9 @@ export function PlatformsOverview() {
       </nav>
 
       {/* Compact page header — no marketing hero, just the title + framing line */}
-      <header className="px-6 pt-28 pb-10 sm:px-10 lg:px-16 lg:pt-36">
+      <header className="px-6 pt-32 pb-14 sm:px-10 lg:px-16 lg:pt-40 lg:pb-16">
         <div className="mx-auto max-w-[1100px]">
-          <h1 className="reveal mb-4 font-sans text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+          <h1 className="reveal mb-5 font-sans text-4xl font-medium leading-tight text-ink sm:text-5xl">
             平台与集成
           </h1>
           <p className="reveal reveal-delay-1 max-w-[640px] text-[15px] leading-[1.7] text-[--ink-soft]">
@@ -161,14 +162,14 @@ export function PlatformsOverview() {
       </header>
 
       {/* ── 场景 → 平台 ── */}
-      <section id="scenarios" className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16">
+      <section id="scenarios" className="scroll-mt-20 px-6 py-12 sm:px-10 sm:py-16 lg:px-16">
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="reveal mb-6 text-2xl font-bold tracking-tight sm:text-3xl">按场景选</h2>
-          <div className="reveal overflow-hidden rounded-xl border border-[--hairline]">
+          <h2 className="reveal mb-7 text-2xl font-medium sm:text-3xl">按场景选</h2>
+          <div className="reveal overflow-hidden rounded bg-[--bg-elev]">
             {SCENARIOS.map((s, i) => (
               <div
                 key={s.scene}
-                className={`flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:gap-6 ${
+                className={`flex flex-col gap-3 px-5 py-5 sm:flex-row sm:items-center sm:gap-6 ${
                   i > 0 ? 'border-t border-[--hairline]' : ''
                 }`}
               >
@@ -177,7 +178,7 @@ export function PlatformsOverview() {
                   {s.picks.map((p) => (
                     <span
                       key={p}
-                      className="rounded-full border border-accent/40 bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent"
+                      className="rounded bg-white/[0.06] px-2.5 py-1 text-xs font-medium text-[--ink-soft]"
                     >
                       {p}
                     </span>
@@ -192,16 +193,17 @@ export function PlatformsOverview() {
         </div>
       </section>
 
-      {/* ── 它们如何协作 (relationship) ── */}
+      {/* ── 它们如何协作 (relationship) — the page's single accent moment ── */}
       <section className="px-6 py-16 sm:px-10 sm:py-24 lg:px-16">
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="reveal mb-3 text-2xl font-bold tracking-tight sm:text-3xl">它们如何串成一个闭环</h2>
-          <p className="reveal reveal-delay-1 mb-12 max-w-[680px] text-[15px] leading-[1.7] text-[--ink-soft]">
-            三端不是各自为政,而是围着<strong className="text-ink">同一个云端 library + 语料库</strong>转出来的一个<strong className="text-ink">闭环</strong>:桌面端把视频下载、转写、AI 分析后自托管上云;移动端免 VPN 随身看、碎片复习,遇到没字幕或非 YouTube 的链接,还能一键推回桌面导入队列 —— 桌面跑完流水线,成片又同步回云端,绕一圈回到你手机。
+          <h2 className="reveal mb-3 text-2xl font-medium sm:text-3xl">它们如何串成一个闭环</h2>
+          <p className="reveal reveal-delay-1 mb-12 max-w-[600px] text-[15px] leading-[1.7] text-[--ink-soft]">
+            三端共享同一个云端语料库，彼此串成一个闭环——任意一端的产出，最终都会流回其他端复习。
           </p>
 
-          {/* closed loop: desktop → cloud → mobile, and mobile pushes links back to the desktop queue */}
-          <div className="reveal reveal-delay-2 rounded-xl border border-[--hairline] bg-[--bg-elev] px-5 py-8 sm:px-10 sm:py-10">
+          {/* closed loop: forward path on top (desktop → cloud → mobile), a return
+              track underneath that arrows back up into 桌面客户端 to close the rectangle. */}
+          <div className="reveal reveal-delay-2 rounded bg-[--bg-elev] px-5 py-8 sm:px-10 sm:py-12">
             {/* forward path: produce → sync → consume */}
             <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
               {LOOP_STAGES.map((s, i) => (
@@ -217,18 +219,30 @@ export function PlatformsOverview() {
               ))}
             </div>
 
-            {/* return path — this is what closes the loop */}
-            <div className="mt-4 flex items-start gap-3 rounded-lg border border-accent/40 bg-accent/[0.08] px-4 py-3">
-              <RotateCcw className="mt-0.5 h-5 w-5 shrink-0 text-accent" strokeWidth={2} />
-              <p className="text-[13px] leading-[1.6] text-[--ink-soft]">
-                <span className="font-semibold text-ink">闭环</span> · 移动端遇到没字幕 / 非 YouTube 的链接,一键推回<span className="text-ink">桌面导入队列</span>;桌面端 yt-dlp + whisper 跑完,成片再同步回云端 —— 又回到你手机。
-              </p>
+            {/* return track (desktop): a U that closes 移动端 → 桌面客户端, forming the loop */}
+            <div className="relative mt-3 hidden h-12 sm:block">
+              <div className="h-full rounded-b border-x border-b border-accent/35" />
+              {/* arrowhead closing the loop up into 桌面客户端 (top-left) */}
+              <ArrowUp
+                className="absolute -left-[9px] -top-2.5 h-[18px] w-[18px] text-accent"
+                strokeWidth={2}
+              />
+              {/* concise return label, sitting on the bottom segment */}
+              <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 whitespace-nowrap bg-[--bg-elev] px-3 text-xs text-[--ink-soft]">
+                移动端把链接推回桌面处理，成片再同步回云端
+              </span>
+            </div>
+
+            {/* return path (mobile): compact, the narrow column can't show the U cleanly */}
+            <div className="mt-4 flex items-center justify-center gap-2 sm:hidden">
+              <RotateCcw className="h-4 w-4 shrink-0 text-accent" strokeWidth={2} />
+              <span className="text-xs text-[--ink-soft]">移动端把链接推回桌面处理，成片再同步回云端</span>
             </div>
 
             {/* the plugin also feeds the shared corpus */}
-            <div className="mt-3 flex items-center justify-center gap-2 text-xs text-[--ink-muted]">
+            <div className="mt-6 flex items-center justify-center gap-2 text-xs text-[--ink-muted]">
               <Puzzle className="h-3.5 w-3.5 text-[--ink-soft]" strokeWidth={2} />
-              浏览器插件随手划词,同样实时汇入这个共享库
+              浏览器插件划词收藏，也汇入同一个共享库
             </div>
           </div>
         </div>
@@ -237,7 +251,7 @@ export function PlatformsOverview() {
       {/* ── 最佳实践:三端配合学英语 ── */}
       <section id="best-practices" className="scroll-mt-20 px-6 py-16 sm:px-10 sm:py-24 lg:px-16">
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="reveal mb-3 text-2xl font-bold tracking-tight sm:text-3xl">最佳实践:怎么配合,把英语学透</h2>
+          <h2 className="reveal mb-3 text-2xl font-medium sm:text-3xl">最佳实践:怎么配合,把英语学透</h2>
           <p className="reveal reveal-delay-1 mb-12 max-w-[640px] text-[15px] leading-[1.7] text-[--ink-soft]">
             三个端各有所长。把它们按"精学 → 泛刷 → 复习"串起来,既有深度又有量,生词还能反复回炉。
           </p>
@@ -264,9 +278,9 @@ export function PlatformsOverview() {
           </div>
 
           {/* 小技巧 */}
-          <div className="reveal reveal-delay-2 mt-6 rounded-xl border border-[--hairline] bg-[--bg-elev] p-6">
-            <div className="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-ink">
-              <Lightbulb className="h-4 w-4 text-accent" strokeWidth={2} />
+          <div className="reveal reveal-delay-2 mt-6 rounded bg-[--bg-elev] p-6 sm:p-8">
+            <div className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-ink">
+              <Lightbulb className="h-4 w-4 text-[--ink-soft]" strokeWidth={2} />
               几个让效率翻倍的小技巧
             </div>
             <ul className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
@@ -276,8 +290,8 @@ export function PlatformsOverview() {
                 '遇到看不懂的长句,直接点 AI 重译,比逐词查更快抓住意思。',
                 '同一个账号在客户端 + 插件登录,语料库自动打通,不用手动导。',
               ].map((t) => (
-                <li key={t} className="flex items-start gap-2 text-sm leading-relaxed text-[--ink-soft]">
-                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
+                <li key={t} className="flex items-start gap-2.5 text-sm leading-relaxed text-[--ink-soft]">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[--ink-faint]" />
                   {t}
                 </li>
               ))}
@@ -287,35 +301,35 @@ export function PlatformsOverview() {
       </section>
 
       {/* ── 平台详情卡 (reference) ── */}
-      <section id="capabilities" className="scroll-mt-20 px-6 pb-24 sm:px-10 sm:pb-32 lg:px-16">
+      <section id="capabilities" className="scroll-mt-20 px-6 pb-28 sm:px-10 sm:pb-36 lg:px-16">
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="reveal mb-6 text-2xl font-bold tracking-tight sm:text-3xl">各端能力</h2>
+          <h2 className="reveal mb-7 text-2xl font-medium sm:text-3xl">各端能力</h2>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {PLATFORMS.map((p, i) => (
               <div
                 key={p.name}
-                className={`reveal reveal-delay-${(i % 2) + 1} flex flex-col rounded-xl border border-[--hairline] bg-[--bg-elev] p-7`}
+                className={`reveal reveal-delay-${(i % 2) + 1} flex flex-col rounded bg-[--bg-elev] p-7 sm:p-8`}
               >
-                <div className="mb-4 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/15">
-                    <p.Icon className="h-5 w-5 text-accent" strokeWidth={2} />
+                <div className="mb-5 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded bg-white/[0.05]">
+                    <p.Icon className="h-5 w-5 text-[--ink-soft]" strokeWidth={1.75} />
                   </div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-xl font-bold text-ink">{p.name}</h3>
+                    <h3 className="text-xl font-medium text-ink">{p.name}</h3>
                     {p.soon && (
-                      <span className="rounded-full bg-white/[0.08] px-2 py-0.5 text-[10px] text-[--ink-muted]">
+                      <span className="rounded bg-white/[0.08] px-2 py-0.5 text-[10px] text-[--ink-muted]">
                         敬请期待
                       </span>
                     )}
                   </div>
                 </div>
-                <p className="mb-4 text-sm text-[--ink-muted]">
+                <p className="mb-5 text-sm text-[--ink-muted]">
                   最适合:<span className="text-[--ink-soft]">{p.bestFor}</span>
                 </p>
-                <ul className="mb-6 flex-1 space-y-2">
+                <ul className="mb-7 flex-1 space-y-2.5">
                   {p.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-[--ink-soft]">
-                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
+                    <li key={f} className="flex items-start gap-2.5 text-sm text-[--ink-soft]">
+                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[--ink-faint]" />
                       {f}
                     </li>
                   ))}
@@ -326,14 +340,14 @@ export function PlatformsOverview() {
                       href={p.cta.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-colors hover:text-ink"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-ink transition-colors duration-300 hover:text-accent"
                     >
                       {p.cta.label} <ArrowRight className="h-4 w-4" strokeWidth={2} />
                     </a>
                   ) : (
                     <Link
                       href={p.cta.href}
-                      className="inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-colors hover:text-ink"
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-ink transition-colors duration-300 hover:text-accent"
                     >
                       {p.cta.label} <ArrowRight className="h-4 w-4" strokeWidth={2} />
                     </Link>
@@ -363,15 +377,15 @@ function LoopNode({
 }) {
   return (
     <div
-      className={`flex flex-1 flex-col items-center gap-2 rounded-lg border px-4 py-5 text-center ${
-        highlight ? 'border-accent/40 bg-accent/10' : 'border-[--hairline] bg-bg'
+      className={`flex flex-1 flex-col items-center gap-2 rounded px-4 py-5 text-center ${
+        highlight ? 'bg-accent/10' : 'bg-white/[0.04]'
       }`}
     >
       <Icon
         className={`h-6 w-6 ${highlight ? 'text-accent' : 'text-[--ink-soft]'}`}
         strokeWidth={1.75}
       />
-      <div className="text-sm font-semibold text-ink">{title}</div>
+      <div className="text-sm font-medium text-ink">{title}</div>
       <div className="text-xs leading-snug text-[--ink-muted]">{role}</div>
     </div>
   );
@@ -389,14 +403,14 @@ function PracticeStep({
   body: string;
 }) {
   return (
-    <div className="flex flex-col rounded-xl border border-[--hairline] bg-[--bg-elev] p-6">
-      <div className="mb-3 flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/15">
-          <Icon className="h-4 w-4 text-accent" strokeWidth={2} />
+    <div className="flex flex-col rounded bg-[--bg-elev] p-6 sm:p-7">
+      <div className="mb-4 flex items-center gap-3">
+        <div className="flex h-9 w-9 items-center justify-center rounded bg-white/[0.05]">
+          <Icon className="h-4 w-4 text-[--ink-soft]" strokeWidth={1.75} />
         </div>
         <div>
-          <div className="text-base font-bold text-ink">{n}</div>
-          <div className="text-xs text-accent">{tool}</div>
+          <div className="text-base font-medium text-ink">{n}</div>
+          <div className="text-xs text-[--ink-muted]">{tool}</div>
         </div>
       </div>
       <p className="text-sm leading-relaxed text-[--ink-muted]">{body}</p>
