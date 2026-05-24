@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import {
   Subtitles,
-  Languages,
   MousePointerClick,
   Library,
   Download as DownloadIcon,
@@ -49,6 +48,7 @@ interface Feature {
   kicker: string;
   title: string;
   body: string;
+  note?: string;
   mediaLabel: string;
 }
 
@@ -58,14 +58,8 @@ const FEATURES: Feature[] = [
     kicker: '双语字幕 · AI 标黄',
     title: '看懂每一句台词',
     body: 'cc 一开，整片中英双语字幕即刻铺满——侧栏跟读自动滚动居中，底部浮层可随手拖。AI 把重点词自动标黄，鼠标悬停就有中文释义和用法笔记。',
+    note: '机器翻译别扭？点「AI 重译」，让你配的大模型整片重翻、覆盖原译。',
     mediaLabel: 'YouTube 侧栏双语字幕 + 标黄悬浮卡',
-  },
-  {
-    Icon: Languages,
-    kicker: 'AI 重译',
-    title: '机器翻译不准？一键重译',
-    body: '默认走免费翻译，零门槛；觉得哪句别扭，点「AI 重译」让你配的大模型整片重翻、覆盖原译。翻译质量自己说了算。',
-    mediaLabel: 'AI 重译前后对比',
   },
   {
     Icon: MousePointerClick,
@@ -80,13 +74,6 @@ const FEATURES: Feature[] = [
     title: '划下的词，到哪都能复习',
     body: '收藏自动同步到云端个人语料库——插件弹窗、桌面客户端、网页端随时打开「我的语料库」复习。从 YouTube 划的词还带时间戳，点一下直接跳回视频那一秒重听。',
     mediaLabel: '我的语料库页 · 时间戳秒跳',
-  },
-  {
-    Icon: DownloadIcon,
-    kicker: '导出字幕',
-    title: '把字幕带走',
-    body: '一键导出中文 / 英文 / 双语 SRT 字幕文件，配任何本地播放器离线看。',
-    mediaLabel: '下载字幕菜单（en / zh / 双语）',
   },
 ];
 
@@ -109,7 +96,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: '怎么更新到新版？',
-    a: '新版发布后，点浏览器工具栏的 whatsub 图标，弹窗顶部会出现「新版可用」提示，点「下载」拿到新 zip，在 chrome://extensions 里重新加载即可。',
+    a: '上架 Chrome 应用商店 / Edge 加载项后，新版本由浏览器自动更新，你无需任何手动操作。',
   },
   {
     q: '收藏的词存在哪？能删吗？',
@@ -119,13 +106,12 @@ const FAQ: { q: string; a: string }[] = [
 
 const SETUP_STEPS = [
   {
-    title: '安装插件',
+    title: '从商店安装',
     lines: [
-      '点「下载插件」拿到 zip，解压到一个固定文件夹（别删，扩展从这里加载）。',
-      '浏览器地址栏打开 chrome://extensions（Edge 是 edge://extensions），打开右上角「开发者模式」。',
-      '点「加载已解压的扩展程序」，选中刚解压出的文件夹。',
+      'Chrome 用户打开 Chrome 应用商店、Edge 用户打开 Edge 加载项，搜索「whatSub」。',
+      '点「添加至 Chrome」（Edge 为「获取」），在弹窗里确认「添加扩展」。',
+      '装好后浏览器工具栏出现 whatsub 图标即可；之后新版本由商店自动更新，无需手动操作。',
     ],
-    note: '暂未上架商店，所以手动加载一次；之后新版会在弹窗顶部提示，点下载重新加载即可。',
   },
   {
     title: '配置大模型 API Key',
@@ -299,6 +285,11 @@ export function PluginShowcase() {
                   <p className="max-w-[480px] text-[15px] leading-[1.7] text-[--ink-soft]">
                     {f.body}
                   </p>
+                  {f.note && (
+                    <p className="mt-3 max-w-[480px] text-[13px] leading-[1.6] text-[--ink-muted]">
+                      {f.note}
+                    </p>
+                  )}
                 </div>
                 <div className="flex-1">
                   <MediaPlaceholder label={f.mediaLabel} />
@@ -352,11 +343,6 @@ export function PluginShowcase() {
                     <div className="mt-3 rounded-lg border border-accent/30 bg-accent/[0.07] px-3 py-2 text-xs leading-relaxed text-[--ink-soft]">
                       <span className="font-semibold text-accent">提示 </span>
                       {s.tip}
-                    </div>
-                  )}
-                  {s.note && (
-                    <div className="mt-3 rounded-lg border border-[--hairline] bg-white/[0.02] px-3 py-2 text-xs leading-relaxed text-[--ink-muted]">
-                      {s.note}
                     </div>
                   )}
                 </div>
