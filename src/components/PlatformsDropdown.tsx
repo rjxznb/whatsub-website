@@ -18,7 +18,7 @@ const PLATFORMS: PlatformItem[] = [
   { label: '最佳实践', desc: '三端配合,把英语学透', href: '/platforms#best-practices', Icon: GraduationCap },
   { label: '桌面客户端', desc: '视频解析 · 字幕分析 · 词汇本', href: '/', Icon: Monitor },
   { label: '浏览器插件', desc: 'YouTube 双语字幕 · 划词收藏', href: '/plugin', Icon: Puzzle },
-  { label: '移动端', desc: '随身复习语料库', Icon: Smartphone, soon: true },
+  { label: '移动端', desc: 'iOS · 随身看 + 复习（即将上线）', href: '/mobile', Icon: Smartphone },
 ];
 
 /** Shared "平台与集成" hover dropdown used by both the homepage Nav and

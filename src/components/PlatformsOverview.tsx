@@ -52,7 +52,8 @@ const PLATFORMS: Platform[] = [
     Icon: Smartphone,
     name: '移动端',
     bestFor: '通勤碎片时间复习',
-    features: ['随身翻看个人语料库', '云端同步,手机也能复习', 'iOS / Android'],
+    features: ['随身翻看个人语料库', '免 VPN 看视频 · 字幕跟读', 'iPhone / iPad（iOS 16+）'],
+    cta: { label: '了解移动端', href: '/mobile' },
     soon: true,
   },
 ];
