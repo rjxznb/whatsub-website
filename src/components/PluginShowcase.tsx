@@ -47,6 +47,35 @@ function MediaPlaceholder({
   );
 }
 
+// Feature demo: autoplay/loop/muted clip (same pattern as the homepage
+// DemoDiagonal), falling back to the placeholder if no video is set.
+function FeatureMedia({
+  video,
+  poster,
+  label,
+}: {
+  video?: string;
+  poster?: string;
+  label: string;
+}) {
+  if (!video) return <MediaPlaceholder label={label} />;
+  return (
+    <div className="overflow-hidden rounded bg-[--bg-elev]">
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+      <video
+        src={video}
+        poster={poster}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="metadata"
+        className="block h-auto w-full"
+      />
+    </div>
+  );
+}
+
 interface Feature {
   Icon: typeof Subtitles;
   kicker: string;
@@ -54,6 +83,8 @@ interface Feature {
   body: string;
   note?: string;
   mediaLabel: string;
+  video?: string;
+  poster?: string;
 }
 
 const FEATURES: Feature[] = [
@@ -64,6 +95,8 @@ const FEATURES: Feature[] = [
     body: 'cc 一开，整片中英双语字幕即刻铺满——侧栏跟读自动滚动居中，底部浮层可随手拖。AI 把重点词自动标黄，鼠标悬停就有中文释义和用法笔记。',
     note: '机器翻译别扭？点「AI 重译」，让你配的大模型整片重翻、覆盖原译。',
     mediaLabel: 'YouTube 侧栏双语字幕 + 标黄悬浮卡',
+    video: '/videos/p1.mp4',
+    poster: '/videos/p1.jpg',
   },
   {
     Icon: MousePointerClick,
@@ -71,6 +104,8 @@ const FEATURES: Feature[] = [
     title: '看到生词，划一下就收下',
     body: '任意网页选中文字即弹收藏框，自动抓取所在的整句上下文。可手填，也能让 AI 补全释义、打标签，一键存进你的私人语料库。',
     mediaLabel: '网页划词 → 收藏对话框',
+    video: '/videos/p2.mp4',
+    poster: '/videos/p2.jpg',
   },
   {
     Icon: Library,
@@ -78,6 +113,8 @@ const FEATURES: Feature[] = [
     title: '划下的词，到哪都能复习',
     body: '收藏自动同步到云端个人语料库——插件弹窗、桌面客户端、网页端随时打开「我的语料库」复习。从 YouTube 划的词还带时间戳，点一下直接跳回视频那一秒重听。',
     mediaLabel: '我的语料库页 · 时间戳秒跳',
+    video: '/videos/p3.mp4',
+    poster: '/videos/p3.jpg',
   },
 ];
 
@@ -290,7 +327,7 @@ export function PluginShowcase() {
                   )}
                 </div>
                 <div className="flex-1">
-                  <MediaPlaceholder label={f.mediaLabel} />
+                  <FeatureMedia video={f.video} poster={f.poster} label={f.mediaLabel} />
                 </div>
               </div>
             );
