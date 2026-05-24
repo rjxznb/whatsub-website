@@ -1,5 +1,6 @@
 'use client';
 
+import { Fragment } from 'react';
 import Link from 'next/link';
 import {
   Monitor,
@@ -87,6 +88,20 @@ const SCENARIOS: Scenario[] = [
     picks: ['移动端'],
     why: '手机随身翻,云端同步(即将上线)',
   },
+];
+
+// The cross-device relationship as a closed loop: desktop produces → cloud
+// syncs → mobile consumes → mobile pushes links back to the desktop queue →
+// (loops). Rendered as the forward path; the return arrow closes it.
+const LOOP_STAGES: {
+  Icon: typeof Monitor;
+  title: string;
+  role: string;
+  highlight?: boolean;
+}[] = [
+  { Icon: Monitor, title: '桌面客户端', role: '下载 · 转写 · AI 分析 · 自托管上云' },
+  { Icon: Database, title: '云端 library + 语料库', role: '多端实时同步的中枢', highlight: true },
+  { Icon: Smartphone, title: '移动端', role: '免 VPN 随身看 · 碎片复习' },
 ];
 
 export function PlatformsOverview() {
@@ -180,29 +195,40 @@ export function PlatformsOverview() {
       {/* ── 它们如何协作 (relationship) ── */}
       <section className="px-6 py-16 sm:px-10 sm:py-24 lg:px-16">
         <div className="mx-auto max-w-[1100px]">
-          <h2 className="reveal mb-3 text-2xl font-bold tracking-tight sm:text-3xl">它们如何串在一起</h2>
-          <p className="reveal reveal-delay-1 mb-12 max-w-[640px] text-[15px] leading-[1.7] text-[--ink-soft]">
-            三个入口分工不同,但都读写<strong className="text-ink">同一个云端个人语料库</strong>——这是把它们连起来的纽带。你在任何一端划词收藏,换到别的端打开立刻能看到。
+          <h2 className="reveal mb-3 text-2xl font-bold tracking-tight sm:text-3xl">它们如何串成一个闭环</h2>
+          <p className="reveal reveal-delay-1 mb-12 max-w-[680px] text-[15px] leading-[1.7] text-[--ink-soft]">
+            三端不是各自为政,而是围着<strong className="text-ink">同一个云端 library + 语料库</strong>转出来的一个<strong className="text-ink">闭环</strong>:桌面端把视频下载、转写、AI 分析后自托管上云;移动端免 VPN 随身看、碎片复习,遇到没字幕或非 YouTube 的链接,还能一键推回桌面导入队列 —— 桌面跑完流水线,成片又同步回云端,绕一圈回到你手机。
           </p>
 
-          {/* hub-and-spoke: three surfaces feed into the shared corpus */}
-          <div className="reveal reveal-delay-2 rounded-xl border border-[--hairline] bg-[--bg-elev] px-6 py-10 sm:px-10">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <HubNode Icon={Monitor} title="桌面客户端" role="精学 · 解析视频" />
-              <HubNode Icon={Puzzle} title="浏览器插件" role="随手捕捉 · 划词收藏" />
-              <HubNode Icon={Smartphone} title="移动端" role="随时复习(即将)" />
+          {/* closed loop: desktop → cloud → mobile, and mobile pushes links back to the desktop queue */}
+          <div className="reveal reveal-delay-2 rounded-xl border border-[--hairline] bg-[--bg-elev] px-5 py-8 sm:px-10 sm:py-10">
+            {/* forward path: produce → sync → consume */}
+            <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4">
+              {LOOP_STAGES.map((s, i) => (
+                <Fragment key={s.title}>
+                  <LoopNode Icon={s.Icon} title={s.title} role={s.role} highlight={s.highlight} />
+                  {i < LOOP_STAGES.length - 1 && (
+                    <div className="flex shrink-0 items-center justify-center text-accent">
+                      <ArrowDown className="h-5 w-5 sm:hidden" strokeWidth={2} />
+                      <ArrowRight className="hidden h-5 w-5 sm:block" strokeWidth={2} />
+                    </div>
+                  )}
+                </Fragment>
+              ))}
             </div>
 
-            <div className="my-5 flex items-center justify-center text-[--ink-faint]">
-              <ArrowDown className="h-5 w-5" strokeWidth={2} />
+            {/* return path — this is what closes the loop */}
+            <div className="mt-4 flex items-start gap-3 rounded-lg border border-accent/40 bg-accent/[0.08] px-4 py-3">
+              <RotateCcw className="mt-0.5 h-5 w-5 shrink-0 text-accent" strokeWidth={2} />
+              <p className="text-[13px] leading-[1.6] text-[--ink-soft]">
+                <span className="font-semibold text-ink">闭环</span> · 移动端遇到没字幕 / 非 YouTube 的链接,一键推回<span className="text-ink">桌面导入队列</span>;桌面端 yt-dlp + whisper 跑完,成片再同步回云端 —— 又回到你手机。
+              </p>
             </div>
 
-            <div className="mx-auto flex max-w-md items-center justify-center gap-3 rounded-xl border border-accent/40 bg-accent/10 px-6 py-5">
-              <Database className="h-6 w-6 shrink-0 text-accent" strokeWidth={2} />
-              <div>
-                <div className="text-base font-semibold text-ink">云端个人语料库</div>
-                <div className="text-xs text-[--ink-muted]">一处划词,处处可见 · 多端实时同步</div>
-              </div>
+            {/* the plugin also feeds the shared corpus */}
+            <div className="mt-3 flex items-center justify-center gap-2 text-xs text-[--ink-muted]">
+              <Puzzle className="h-3.5 w-3.5 text-[--ink-soft]" strokeWidth={2} />
+              浏览器插件随手划词,同样实时汇入这个共享库
             </div>
           </div>
         </div>
@@ -324,20 +350,29 @@ export function PlatformsOverview() {
   );
 }
 
-function HubNode({
+function LoopNode({
   Icon,
   title,
   role,
+  highlight,
 }: {
   Icon: typeof Monitor;
   title: string;
   role: string;
+  highlight?: boolean;
 }) {
   return (
-    <div className="flex flex-col items-center gap-2 rounded-lg border border-[--hairline] bg-bg px-4 py-5 text-center">
-      <Icon className="h-6 w-6 text-[--ink-soft]" strokeWidth={1.75} />
+    <div
+      className={`flex flex-1 flex-col items-center gap-2 rounded-lg border px-4 py-5 text-center ${
+        highlight ? 'border-accent/40 bg-accent/10' : 'border-[--hairline] bg-bg'
+      }`}
+    >
+      <Icon
+        className={`h-6 w-6 ${highlight ? 'text-accent' : 'text-[--ink-soft]'}`}
+        strokeWidth={1.75}
+      />
       <div className="text-sm font-semibold text-ink">{title}</div>
-      <div className="text-xs text-[--ink-muted]">{role}</div>
+      <div className="text-xs leading-snug text-[--ink-muted]">{role}</div>
     </div>
   );
 }
