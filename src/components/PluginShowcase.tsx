@@ -216,9 +216,6 @@ export function PluginShowcase() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    {/* No opaque `bg-bg` — let the body's radial glow + dot-grid texture show
-        through (same vibe as the homepage). Sections that need contrast still
-        use bg-[--bg-elev]. */}
     <div ref={ref} className="text-ink">
       {/* ── page nav: logo home + section anchors + download CTA ── */}
       <nav

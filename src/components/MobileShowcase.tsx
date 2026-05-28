@@ -194,9 +194,6 @@ export function MobileShowcase() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    {/* No opaque `bg-bg` — let the body's radial glow + dot-grid texture show
-        through (same vibe as the homepage hero region). Sections still get their
-        own bg-[--bg-elev] / hairlines where the layout needs elevation. */}
     <div ref={ref} className="text-ink">
       {/* ── page nav ── */}
       <nav
