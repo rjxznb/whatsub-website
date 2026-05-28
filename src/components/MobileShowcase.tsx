@@ -73,46 +73,36 @@ interface Feature {
   poster?: string;
 }
 
-// Order = the learning loop: 导入 → 精读 → 查词收藏 → 复习. The share-import is the
-// hero capability, so it leads. Drop each clip at the `video` path below
-// (public/videos/m1.mp4 … m4.mp4); until then a placeholder shows.
+// 3 parts: ① 导入 + 双语精读(合并) → ② 词汇本 → ③ 多端同步语料库. Drop each clip at the
+// `video` path below (public/videos/m1.mp4 … m3.mp4); until then a placeholder shows.
 const FEATURES: Feature[] = [
   {
     Icon: Share2,
-    kicker: '任意平台 · 一键导入',
-    title: '看到好视频，分享给它',
-    body: '从 YouTube、Bilibili、Safari… 任意 app 把链接分享进 whatSub。能直接抓字幕的当场解析；没字幕或非 YouTube 的，自动交给桌面端跑 yt-dlp + whisper 转写，成片再同步回手机。',
-    note: '同步回来的视频走国内 CDN，免 VPN 直接看。',
-    mediaLabel: '分享链接 → 自动解析成双语课',
+    kicker: '任意平台导入 · 双语精读',
+    title: '看到好视频，分享进来逐句读',
+    body: '从 YouTube、Bilibili、Safari… 任意 app 把链接分享进 whatSub：能抓字幕的当场解析，没字幕或非 YouTube 的交给桌面端跑 yt-dlp + whisper 转写，成片免 VPN 同步回手机。然后逐句精读——英文在上、中文在下，AI 标重点词、当前句高亮、点句跳转，横屏全屏还支持画中画。',
+    mediaLabel: '分享导入 → 逐句双语精读',
     video: '/videos/m1.mp4',
     poster: '/videos/m1.jpg',
   },
   {
-    Icon: Subtitles,
-    kicker: '双语字幕 · 免 VPN 秒开',
-    title: '一句一句，跟着读',
-    body: '英文在上、中文在下，AI 把重点词标黄；字幕跟随播放自动滚动、当前句高亮，点句即跳转。自托管视频国内 CDN 秒开，横屏全屏、视频上叠字幕，还支持画中画。',
-    mediaLabel: '双语字幕跟读 · 横屏全屏 + 画中画',
+    Icon: BookMarked,
+    kicker: '词汇本 · 离线词典 + AI',
+    title: '长按字幕，任意词收进词汇本',
+    body: '精读时长按任意一段字幕，在弹出的收藏卡里挑词——不限 AI 高亮词，句中任意单词或短语都能加进这条视频的词汇本；离线英汉词典即点即查、带音标，想深挖再用你自己的 AI 一键翻译讲解。删视频时词汇还能迁移保留。',
+    mediaLabel: '选词收藏 · 音标 + 离线释义 + AI',
     video: '/videos/m2.mp4',
     poster: '/videos/m2.jpg',
   },
   {
-    Icon: BookMarked,
-    kicker: '词汇本 · 离线词典 + AI',
-    title: '想学的词，长按就收',
-    body: '精读时长按字幕，挑出想学的词或短语收进这条视频的词汇本；离线英汉词典即点即查、带音标，想深挖再用你自己的 AI 一键翻译讲解。删视频时词汇还能迁移保留。',
-    mediaLabel: '选词收藏 · 音标 + 离线释义 + AI',
+    Icon: Library,
+    kicker: '多端同步 · 语料库',
+    title: '一处划词，三端随身查',
+    body: '语料库主要靠浏览器插件积累——在网页 / 视频里划词收藏，短语连同释义、例句出处一起进库。桌面端、手机端用同一账号登录即多端同步：手机上随时翻阅、按标签筛选，点 ▶ 跳回出处重听，再用单词卡（英→中、带音标发音）查漏补缺。',
+    note: '划词收藏在浏览器插件里完成；手机端侧重随身查阅与复习。',
+    mediaLabel: '插件划词 → 多端同步语料库',
     video: '/videos/m3.mp4',
     poster: '/videos/m3.jpg',
-  },
-  {
-    Icon: Library,
-    kicker: '语料库 · 单词卡',
-    title: '攒下的词，躺着也能复习',
-    body: '公共 + 个人语料库随身翻，按标签多选筛选，每条短语带例句出处，点 ▶ 跳回视频那一秒重听；单词卡测验（英→中、带音标和发音）帮你查漏补缺。',
-    mediaLabel: '语料库筛选 + 单词卡测验',
-    video: '/videos/m4.mp4',
-    poster: '/videos/m4.jpg',
   },
 ];
 
