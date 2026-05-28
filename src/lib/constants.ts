@@ -67,3 +67,26 @@ export const PRICING = {
     '所有未来更新免费',
   ],
 } as const;
+
+/**
+ * whatSub Pro subscription tier. Recurring revenue covers the recurring
+ * costs (OSS storage + CDN egress + iOS sub-server entitlement check) that
+ * a one-time license can't fund. Same backend payment endpoint as PRICING;
+ * differentiated by `product: 'sub_month' | 'sub_year'` on the create-order
+ * request. Year price is monthly × 12 with ~40% off (¥144 → ¥88).
+ */
+export const SUBSCRIPTION = {
+  monthlyAmount: '¥12',
+  yearlyAmount: '¥88',
+  yearlySavingsLabel: '比月付省 ¥56 (约 40% off)',
+  label: 'whatSub Pro · 解锁更多容量',
+  features: [
+    '云端视频 50 个（免费 3 个）',
+    '单个视频 500MB / 60 分钟（免费 100MB / 20 分钟）',
+    '个人语料库 1000 条（免费 50 条）',
+    '一份订阅可在 3 台设备同时使用',
+    'iOS / 桌面 / 浏览器插件 全平台通用',
+    '随时可在支付宝订单中关闭，到期自然结束',
+    '使用中遇到问题，客服协助解决',
+  ],
+} as const;

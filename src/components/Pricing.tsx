@@ -1,11 +1,11 @@
 'use client';
 
-import { Check, Clock, GraduationCap, ShoppingBag, X, Zap } from 'lucide-react';
+import { Check, Clock, GraduationCap, ShoppingBag, Star, X, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { useReveal } from '@/hooks/useReveal';
 import { usePromotion, type PromoStatus } from '@/hooks/usePromotion';
-import { LINKS, PRICING } from '@/lib/constants';
-import { createOrder } from '@/lib/payment-api';
+import { LINKS, PRICING, SUBSCRIPTION } from '@/lib/constants';
+import { createOrder, type SubProduct } from '@/lib/payment-api';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -68,9 +68,18 @@ function reasonToCN(reason: string): string {
 
 export function Pricing() {
   const ref = useReveal<HTMLElement>();
+  // Buyout card state (left column).
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Pro-subscription card state (right column). Separate from buyout so the
+  // two forms don't fight over a single email input or share a spinner.
+  const [subEmail, setSubEmail] = useState('');
+  const [subBusy, setSubBusy] = useState(false);
+  const [subError, setSubError] = useState<string | null>(null);
+  // Default to yearly — flagged as 40% savings, fits the recommended path.
+  const [subPlan, setSubPlan] = useState<SubProduct>('sub_year');
 
   const { state, applyCode, clearCode } = usePromotion();
 
@@ -135,6 +144,26 @@ export function Pricing() {
     }
   };
 
+  const onSubSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubError(null);
+    if (!EMAIL_RE.test(subEmail)) {
+      setSubError('请输入有效的邮箱地址');
+      return;
+    }
+    setSubBusy(true);
+    try {
+      // Subscription SKUs use fixed env prices on the backend; no promoCode.
+      const { payUrl } = await createOrder(subEmail, undefined, subPlan);
+      window.location.href = payUrl;
+    } catch (err) {
+      setSubBusy(false);
+      const msg = err instanceof Error ? err.message : 'unknown';
+      if (msg === 'invalid_email') setSubError('邮箱格式不正确');
+      else setSubError('网络异常，请稍后再试');
+    }
+  };
+
   // Display values driven by promo state.
   const primaryPrice =
     isApplied ? formatCny(state.finalPrice) : PRICING.amount;
@@ -160,8 +189,11 @@ export function Pricing() {
 
         <PromoBanner state={state} />
 
+        {/* Two-card grid: left = 永久买断 (existing), right = Pro 订阅 (new). */}
+        <div className="mx-auto grid max-w-[920px] grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+
         <div
-          className="reveal reveal-delay-1 mx-auto max-w-[440px] rounded-2xl border border-[--hairline-strong] bg-[--bg-elev] p-7 sm:p-9"
+          className="reveal reveal-delay-1 rounded-2xl border border-[--hairline-strong] bg-[--bg-elev] p-7 sm:p-9"
           style={{ boxShadow: '0 0 80px rgba(59,155,255,0.05)' }}
         >
           <p className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-[--ink-faint]">
@@ -264,6 +296,100 @@ export function Pricing() {
             数字商品售出不退
           </p>
         </div>
+
+        {/* ----- Pro 订阅 card ----- */}
+        <div
+          className="reveal reveal-delay-2 rounded-2xl border border-[--hairline-strong] bg-[--bg-elev] p-7 sm:p-9"
+          style={{ boxShadow: '0 0 80px rgba(59,155,255,0.05)' }}
+        >
+          <p className="mb-3 flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.2em] text-accent">
+            <Star className="h-3 w-3" fill="currentColor" strokeWidth={0} />
+            订阅
+          </p>
+
+          {/* Plan toggle (月 / 年). Yearly is default; bumps the savings pill. */}
+          <div className="mb-5 grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setSubPlan('sub_month')}
+              className={`rounded-lg border px-4 py-3 text-left transition-colors ${
+                subPlan === 'sub_month'
+                  ? 'border-accent bg-accent/10'
+                  : 'border-[--hairline-strong] bg-bg/40 hover:border-[--hairline-strong]/80'
+              }`}
+            >
+              <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-[--ink-faint]">月度</div>
+              <div className="mt-0.5 text-2xl font-bold text-ink">
+                {SUBSCRIPTION.monthlyAmount}
+                <span className="text-sm font-normal text-[--ink-faint]"> /月</span>
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSubPlan('sub_year')}
+              className={`relative rounded-lg border px-4 py-3 text-left transition-colors ${
+                subPlan === 'sub_year'
+                  ? 'border-accent bg-accent/10'
+                  : 'border-[--hairline-strong] bg-bg/40 hover:border-[--hairline-strong]/80'
+              }`}
+            >
+              <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-accent">年度 · 省 40%</div>
+              <div className="mt-0.5 text-2xl font-bold text-ink">
+                {SUBSCRIPTION.yearlyAmount}
+                <span className="text-sm font-normal text-[--ink-faint]"> /年</span>
+              </div>
+            </button>
+          </div>
+
+          <p className="mb-8 text-sm text-[--ink-soft]">{SUBSCRIPTION.label}</p>
+
+          <ul className="mb-8 space-y-3">
+            {SUBSCRIPTION.features.map((f) => (
+              <li key={f} className="flex items-start gap-3 text-sm text-[--ink-soft]">
+                <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
+                  <Check className="h-3 w-3" strokeWidth={2.5} />
+                </span>
+                <span>{renderFeature(f)}</span>
+              </li>
+            ))}
+          </ul>
+
+          <form onSubmit={onSubSubmit} className="mb-3 space-y-3">
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="邮箱地址，订阅状态绑定到此邮箱"
+              value={subEmail}
+              onChange={(e) => setSubEmail(e.target.value)}
+              disabled={subBusy}
+              className="block w-full rounded-lg border border-[--hairline-strong] bg-bg/50 px-4 py-3 text-sm text-ink placeholder:text-[--ink-faint] focus:border-accent focus:outline-none disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={subBusy || !subEmail}
+              className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-accent text-sm font-semibold text-white transition-transform hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-60"
+              style={{ boxShadow: '0 0 0 1px rgba(59,155,255,0.4), 0 0 32px var(--accent-glow)' }}
+            >
+              <Star className="h-4 w-4" fill="currentColor" strokeWidth={0} />
+              {subBusy
+                ? '处理中...'
+                : `立即订阅 · ${subPlan === 'sub_year' ? SUBSCRIPTION.yearlyAmount + '/年' : SUBSCRIPTION.monthlyAmount + '/月'} 跳转支付宝`}
+            </button>
+            {subError ? (
+              <p className="text-center text-xs text-red-400">{subError}</p>
+            ) : null}
+          </form>
+
+          <p className="mb-2 mt-4 text-center text-xs text-[--ink-muted]">
+            iOS 用户请在 app 内订阅
+          </p>
+          <p className="text-center text-xs text-[--ink-faint]">
+            随时可在支付宝订单中关闭 · 到期自然结束
+          </p>
+        </div>
+
+        </div>{/* end 2-card grid */}
       </div>
     </section>
   );

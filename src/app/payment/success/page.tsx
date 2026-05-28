@@ -84,11 +84,36 @@ function SuccessInner() {
   }
 
   if (state.status === 'paid') {
+    // Subscription path: no license key — sub access is tied to the order's
+    // email + the server-side web_subscriptions row. User just needs to log
+    // in to whatever client (iOS / plugin / desktop) with the same email and
+    // hasActiveSubscription will be true on next /me.
+    if (state.product === 'sub_month' || state.product === 'sub_year') {
+      const planLabel = state.product === 'sub_year' ? '年度' : '月度';
+      return (
+        <PageShell>
+          <h1 className="mb-2 text-3xl font-bold text-ink">订阅已开通</h1>
+          <p className="mb-8 text-[--ink-soft]">
+            whatSub Pro · {planLabel} · 订阅状态已绑定到你的邮箱。
+          </p>
+          <SubActivationGuide />
+          <Link
+            href="/#download"
+            className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-accent px-7 text-sm font-semibold text-white transition-transform hover:-translate-y-px"
+          >
+            下载 whatSub →
+          </Link>
+        </PageShell>
+      );
+    }
+    // Buyout path: show the minted license key.
     return (
       <PageShell>
         <h1 className="mb-2 text-3xl font-bold text-ink">购买成功</h1>
         <p className="mb-8 text-[--ink-soft]">这是你的激活码（已同步发送至邮箱）：</p>
-        <LicenseKeyDisplay licenseKey={state.licenseKey} />
+        {state.licenseKey ? (
+          <LicenseKeyDisplay licenseKey={state.licenseKey} />
+        ) : null}
         <ActivationGuide />
         <Link
           href="/#download"
@@ -185,6 +210,18 @@ function ActivationGuide() {
       </li>
       <li>打开 whatSub，按提示输入上面的激活码</li>
       <li>一份激活码可在 3 台个人设备上同时使用</li>
+    </ol>
+  );
+}
+
+function SubActivationGuide() {
+  return (
+    <ol className="mx-auto max-w-[420px] list-decimal space-y-2 text-left text-sm text-[--ink-soft]">
+      <li>
+        下载并安装 whatSub（<a className="text-accent hover:underline" href="/#download">点这里</a>）
+      </li>
+      <li>用支付时填写的同一个邮箱登录（桌面端 / 浏览器插件 / iOS app）</li>
+      <li>订阅自动激活；云端视频额度提升到 50 个，单个视频上限 500MB / 60 分钟</li>
     </ol>
   );
 }

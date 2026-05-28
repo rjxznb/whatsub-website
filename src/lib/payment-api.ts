@@ -8,14 +8,22 @@ export interface CreateOrderResponse {
 export interface PaymentStatusPending {
   status: 'pending';
 }
+/** Backend always returns BOTH `licenseKey` and `product`:
+ *  - Buyout order: `licenseKey` is the minted key, `product` is null.
+ *  - Subscription order (sub_month / sub_year): `licenseKey` is null,
+ *    `product` is the SKU. Frontend branches on `product` to render the
+ *    right success UI. */
 export interface PaymentStatusPaid {
   status: 'paid';
-  licenseKey: string;
+  licenseKey: string | null;
+  product: 'sub_month' | 'sub_year' | null;
 }
 export interface PaymentStatusOther {
   status: 'expired' | 'cancelled';
 }
 export type PaymentStatus = PaymentStatusPending | PaymentStatusPaid | PaymentStatusOther;
+
+export type SubProduct = 'sub_month' | 'sub_year';
 
 /**
  * Validation result for a promo code (URL param OR buyer-entered).
@@ -54,9 +62,14 @@ export type PromoValidation =
 export async function createOrder(
   email: string,
   promoCode?: string | null,
+  product?: SubProduct,
 ): Promise<CreateOrderResponse> {
-  const body: { email: string; promoCode?: string } = { email };
-  if (promoCode) body.promoCode = promoCode;
+  // Buyout = no `product`, optionally a `promoCode`. Subscription = `product`
+  // is sub_month/sub_year, no promoCode (backend ignores it for sub anyway —
+  // sub SKUs use fixed prices from env, see whatsub-license payment.ts).
+  const body: { email: string; promoCode?: string; product?: SubProduct } = { email };
+  if (promoCode && !product) body.promoCode = promoCode;
+  if (product) body.product = product;
   const res = await fetch(`${API_BASE}/payment/create-order`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
