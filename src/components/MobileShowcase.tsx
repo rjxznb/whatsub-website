@@ -22,17 +22,28 @@ import { PlatformsDropdown } from './PlatformsDropdown';
 const BTN_SECONDARY =
   'inline-flex h-12 items-center gap-2.5 rounded-lg border border-[--hairline-strong] bg-white/[0.04] px-7 text-sm font-semibold text-ink transition-transform hover:-translate-y-px';
 
-// Portrait phone media: renders the feature's screen-recording when `video` is
-// set, otherwise a placeholder (so the page never breaks before clips are
-// recorded — mirrors PluginShowcase's <Media>). Drop the .mp4 at the path below
-// (e.g. public/videos/m1.mp4) and it shows automatically.
-function PhoneMedia({ video, poster, label }: { video?: string; poster?: string; label: string }) {
+// Feature media: portrait phone box by default; landscape 16:9 box when
+// `landscape` (e.g. the desktop↔phone sync clip is recorded landscape, so the
+// portrait box would crop it badly). Renders the screen-recording when `video`
+// is set, else a placeholder (mirrors PluginShowcase's <Media>).
+function PhoneMedia({
+  video,
+  poster,
+  label,
+  landscape,
+}: {
+  video?: string;
+  poster?: string;
+  label: string;
+  landscape?: boolean;
+}) {
+  const wrap = landscape
+    ? 'mx-auto w-full max-w-[480px] overflow-hidden rounded bg-[--bg-elev]'
+    : 'mx-auto w-full max-w-[260px] overflow-hidden rounded bg-[--bg-elev]';
+  const ratio = landscape ? '16 / 9' : '9 / 19';
   if (!video) {
     return (
-      <div
-        className="mx-auto w-full max-w-[260px] overflow-hidden rounded bg-[--bg-elev]"
-        style={{ aspectRatio: '9 / 19' }}
-      >
+      <div className={wrap} style={{ aspectRatio: ratio }}>
         <div className="flex h-full flex-col items-center justify-center gap-2 px-6 text-center">
           <span className="font-mono text-[10px] tracking-[0.1em] text-[--ink-faint]">
             演示占位
@@ -43,10 +54,7 @@ function PhoneMedia({ video, poster, label }: { video?: string; poster?: string;
     );
   }
   return (
-    <div
-      className="mx-auto w-full max-w-[260px] overflow-hidden rounded bg-[--bg-elev]"
-      style={{ aspectRatio: '9 / 19' }}
-    >
+    <div className={wrap} style={{ aspectRatio: ratio }}>
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video
         src={video}
@@ -71,6 +79,7 @@ interface Feature {
   mediaLabel: string;
   video?: string;
   poster?: string;
+  landscape?: boolean;
 }
 
 // 4 parts: ① 导入 + 双语精读(合并) → ② 词汇本 → ③ 多端同步语料库 → ④ 云端同步视频. Drop each
@@ -112,6 +121,7 @@ const FEATURES: Feature[] = [
     mediaLabel: '桌面同步上云 → 手机同账号即看',
     video: '/videos/m4.mp4',
     poster: '/videos/m4.jpg',
+    landscape: true,
   },
 ];
 
@@ -275,7 +285,7 @@ export function MobileShowcase() {
                   )}
                 </div>
                 <div className="flex-1">
-                  <PhoneMedia video={f.video} poster={f.poster} label={f.mediaLabel} />
+                  <PhoneMedia video={f.video} poster={f.poster} label={f.mediaLabel} landscape={f.landscape} />
                 </div>
               </div>
             );
