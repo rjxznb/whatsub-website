@@ -298,7 +298,14 @@ export function PluginShowcase() {
       </section>
 
       {/* ── Feature rows (alternating) ── */}
-      <section id="features" className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16">
+      <section
+        id="features"
+        className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16"
+        style={{
+          backgroundImage:
+            'radial-gradient(ellipse at 30% 30%, rgba(59,155,255,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.04) 0%, transparent 50%), linear-gradient(135deg, #0a0a0c 0%, #141418 100%)',
+        }}
+      >
         <div className="mx-auto flex max-w-[1100px] flex-col gap-20 sm:gap-28">
           {FEATURES.map((f, i) => {
             const flip = i % 2 === 1;

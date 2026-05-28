@@ -112,6 +112,7 @@ const FEATURES: Feature[] = [
     mediaLabel: '插件划词 → 多端同步语料库',
     video: '/videos/m3.mp4',
     poster: '/videos/m3.jpg',
+    landscape: true,   // new part3 recording is 1920×1080 (plugin/desktop view)
   },
   {
     Icon: Cloud,
@@ -275,8 +276,17 @@ export function MobileShowcase() {
         </div>
       </section>
 
-      {/* ── Feature rows (alternating) — each part is a screen-recording clip ── */}
-      <section id="features" className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16">
+      {/* ── Feature rows (alternating) — each part is a screen-recording clip.
+            Same subtle blue + diagonal-dark gradient as the homepage DemoDiagonal,
+            so the video showcase band feels visually distinct from the hero. ── */}
+      <section
+        id="features"
+        className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16"
+        style={{
+          backgroundImage:
+            'radial-gradient(ellipse at 30% 30%, rgba(59,155,255,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.04) 0%, transparent 50%), linear-gradient(135deg, #0a0a0c 0%, #141418 100%)',
+        }}
+      >
         <div className="mx-auto flex max-w-[1100px] flex-col gap-20 sm:gap-28">
           {FEATURES.map((f, i) => {
             const flip = i % 2 === 1;
