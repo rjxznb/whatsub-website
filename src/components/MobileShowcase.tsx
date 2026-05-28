@@ -73,8 +73,8 @@ interface Feature {
   poster?: string;
 }
 
-// 3 parts: ① 导入 + 双语精读(合并) → ② 词汇本 → ③ 多端同步语料库. Drop each clip at the
-// `video` path below (public/videos/m1.mp4 … m3.mp4); until then a placeholder shows.
+// 4 parts: ① 导入 + 双语精读(合并) → ② 词汇本 → ③ 多端同步语料库 → ④ 云端同步视频. Drop each
+// clip at the `video` path below (public/videos/m1.mp4 … m4.mp4); until then a placeholder shows.
 const FEATURES: Feature[] = [
   {
     Icon: Share2,
@@ -103,6 +103,15 @@ const FEATURES: Feature[] = [
     mediaLabel: '插件划词 → 多端同步语料库',
     video: '/videos/m3.mp4',
     poster: '/videos/m3.jpg',
+  },
+  {
+    Icon: Cloud,
+    kicker: '云端同步 · 桌面 ↔ 手机',
+    title: '一端同步上云，两端都能看',
+    body: '桌面端把解析好的视频同步上云，手机用同一邮箱登录，云端 library 立刻出现——同一个视频不用再导第二遍，桌面、手机随处接着看，国内走自托管 CDN 免 VPN 秒开。',
+    mediaLabel: '桌面同步上云 → 手机同账号即看',
+    video: '/videos/m4.mp4',
+    poster: '/videos/m4.jpg',
   },
 ];
 
