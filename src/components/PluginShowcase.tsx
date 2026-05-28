@@ -216,7 +216,10 @@ export function PluginShowcase() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    <div ref={ref} className="bg-bg text-ink">
+    {/* No opaque `bg-bg` — let the body's radial glow + dot-grid texture show
+        through (same vibe as the homepage). Sections that need contrast still
+        use bg-[--bg-elev]. */}
+    <div ref={ref} className="text-ink">
       {/* ── page nav: logo home + section anchors + download CTA ── */}
       <nav
         className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06]"
