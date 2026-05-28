@@ -1,4 +1,5 @@
 import { MobileShowcase } from '@/components/MobileShowcase';
+import { ProSubscriptionCard } from '@/components/ProSubscriptionCard';
 import { Footer } from '@/components/Footer';
 
 export const metadata = {
@@ -12,6 +13,11 @@ export default function MobilePage() {
     <>
       <main>
         <MobileShowcase />
+        {/* Pro subscription card. Mounted on /mobile (not /pricing) because the
+            value props are mostly mobile-side: cloud library quota, per-video
+            size + duration cap, cross-device sync. Desktop in-app upsell
+            dialogs deep-link to /mobile#pro. */}
+        <ProSubscriptionCard />
       </main>
       <Footer />
     </>
