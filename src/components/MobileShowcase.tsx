@@ -236,27 +236,47 @@ export function MobileShowcase() {
         </div>
       </nav>
 
-      {/* ── Slim intro band (no full hero — lead straight into the feature clips) ── */}
-      <section className="px-6 pt-28 pb-6 text-center sm:px-10 sm:pt-32 lg:px-16">
-        <p className="reveal mx-auto max-w-[640px] text-[clamp(18px,2.6vw,28px)] font-medium leading-[1.4] text-ink">
-          让一句字幕，慢慢成为你的英语
-        </p>
-        <p className="reveal reveal-delay-1 mx-auto mt-3 max-w-[620px] text-[clamp(13px,1.5vw,16px)] leading-[1.6] text-[--ink-muted]">
-          移动端版 · 桌面端解析的视频和语料库随身看、随身复习，国内免 VPN 秒开
-        </p>
-        <div className="reveal reveal-delay-2 mt-7 flex flex-wrap items-center justify-center gap-3">
-          <span className="inline-flex h-12 items-center gap-2.5 rounded-lg bg-white/[0.06] px-7 text-sm font-medium text-[--ink-soft]">
-            <AppleLogo className="h-[18px] w-[18px]" />
-            App Store 即将上线
-          </span>
-          <Link href="/" className={BTN_SECONDARY}>
-            先用桌面客户端
-          </Link>
+      {/* ── Hero (signature kept identical to the homepage; mobile-specific copy) ── */}
+      <section className="relative overflow-hidden px-6 pt-32 pb-20 sm:px-10 lg:px-16 lg:pt-44 lg:pb-28">
+        <div className="mx-auto max-w-[1100px] text-center">
+          <h1
+            className="reveal mb-12 font-display font-bold leading-none tracking-[-0.01em] text-ink"
+            style={{ fontSize: 'clamp(48px, 13vw, 180px)' }}
+          >
+            hey,&nbsp;what
+            <span className="text-ink">’</span>
+            <span className="inline-block text-accent cursor-pointer transition-transform duration-300 ease-out [text-shadow:0_0_32px_var(--accent-glow)] hover:scale-125 hover:[text-shadow:0_0_24px_rgba(255,255,255,0.85),0_0_48px_rgba(255,255,255,0.4)]">
+              Sub
+            </span>
+            ?
+          </h1>
+
+          <p className="reveal reveal-delay-1 mx-auto mb-4 max-w-[640px] text-[clamp(16px,2vw,22px)] leading-[1.55] text-[--ink-soft]">
+            让一句字幕，慢慢成为你的英语
+          </p>
+
+          <p className="reveal reveal-delay-1 mx-auto mb-10 max-w-[620px] text-[clamp(13px,1.5vw,16px)] leading-[1.6] text-[--ink-muted]">
+            移动端版 · 桌面端解析的视频和语料库随身看、随身复习，国内免 VPN 秒开
+          </p>
+
+          <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3">
+            <span className="inline-flex h-12 items-center gap-2.5 rounded-lg bg-white/[0.06] px-7 text-sm font-medium text-[--ink-soft]">
+              <AppleLogo className="h-[18px] w-[18px]" />
+              App Store 即将上线
+            </span>
+            <Link href="/" className={BTN_SECONDARY}>
+              先用桌面客户端
+            </Link>
+          </div>
+
+          <p className="reveal reveal-delay-3 mx-auto mt-6 max-w-[520px] text-xs text-[--ink-faint]">
+            上线前可先用桌面客户端 + 浏览器插件，数据互通，app 上架后无缝衔接。
+          </p>
         </div>
       </section>
 
       {/* ── Feature rows (alternating) — each part is a screen-recording clip ── */}
-      <section id="features" className="scroll-mt-20 px-6 pt-10 pb-10 sm:px-10 lg:px-16">
+      <section id="features" className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16">
         <div className="mx-auto flex max-w-[1100px] flex-col gap-20 sm:gap-28">
           {FEATURES.map((f, i) => {
             const flip = i % 2 === 1;
