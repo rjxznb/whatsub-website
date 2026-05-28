@@ -37,9 +37,13 @@ function PhoneMedia({
   label: string;
   landscape?: boolean;
 }) {
+  // Soft blue glow + 1px white hairline — lifts the clip off the dark page and
+  // makes the screen edge crisper. Brand accent (#3B9BFF) at low opacity.
+  const halo =
+    'shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_0_80px_-20px_rgba(59,155,255,0.35)]';
   const wrap = landscape
-    ? 'mx-auto w-full max-w-[480px] overflow-hidden rounded bg-[--bg-elev]'
-    : 'mx-auto w-full max-w-[260px] overflow-hidden rounded bg-[--bg-elev]';
+    ? `mx-auto w-full max-w-[480px] overflow-hidden rounded bg-[--bg-elev] ${halo}`
+    : `mx-auto w-full max-w-[260px] overflow-hidden rounded bg-[--bg-elev] ${halo}`;
   const ratio = landscape ? '16 / 9' : '9 / 19';
   if (!video) {
     return (
@@ -276,17 +280,8 @@ export function MobileShowcase() {
         </div>
       </section>
 
-      {/* ── Feature rows (alternating) — each part is a screen-recording clip.
-            Same subtle blue + diagonal-dark gradient as the homepage DemoDiagonal,
-            so the video showcase band feels visually distinct from the hero. ── */}
-      <section
-        id="features"
-        className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse at 30% 30%, rgba(59,155,255,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.04) 0%, transparent 50%), linear-gradient(135deg, #0a0a0c 0%, #141418 100%)',
-        }}
-      >
+      {/* ── Feature rows (alternating) — each part is a screen-recording clip ── */}
+      <section id="features" className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16">
         <div className="mx-auto flex max-w-[1100px] flex-col gap-20 sm:gap-28">
           {FEATURES.map((f, i) => {
             const flip = i % 2 === 1;

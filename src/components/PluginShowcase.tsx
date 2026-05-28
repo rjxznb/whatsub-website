@@ -34,7 +34,7 @@ function MediaPlaceholder({
 }) {
   return (
     <div
-      className="relative w-full overflow-hidden rounded bg-[--bg-elev]"
+      className="relative w-full overflow-hidden rounded bg-[--bg-elev] shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_0_80px_-20px_rgba(59,155,255,0.35)]"
       style={{ aspectRatio: aspect }}
     >
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 px-6 text-center">
@@ -60,7 +60,7 @@ function FeatureMedia({
 }) {
   if (!video) return <MediaPlaceholder label={label} />;
   return (
-    <div className="overflow-hidden rounded bg-[--bg-elev]">
+    <div className="overflow-hidden rounded bg-[--bg-elev] shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_0_80px_-20px_rgba(59,155,255,0.35)]">
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video
         src={video}
@@ -298,14 +298,7 @@ export function PluginShowcase() {
       </section>
 
       {/* ── Feature rows (alternating) ── */}
-      <section
-        id="features"
-        className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse at 30% 30%, rgba(59,155,255,0.12) 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, rgba(255,255,255,0.04) 0%, transparent 50%), linear-gradient(135deg, #0a0a0c 0%, #141418 100%)',
-        }}
-      >
+      <section id="features" className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16">
         <div className="mx-auto flex max-w-[1100px] flex-col gap-20 sm:gap-28">
           {FEATURES.map((f, i) => {
             const flip = i % 2 === 1;
