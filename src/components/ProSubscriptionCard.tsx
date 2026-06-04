@@ -9,7 +9,8 @@ import { createOrder, type SubProduct } from '@/lib/payment-api';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
- * whatSub Pro 订阅 card — Alipay flow for ¥12/月 or ¥88/年.
+ * whatSub Pro 订阅 card — Alipay flow for ¥22/月 or ¥168/年 (was ¥12/¥88
+ * until 2026-06-04 when the price was bumped to fund the managed-LLM relay).
  *
  * Sits on /mobile (not /pricing) because the value props are mostly mobile-side
  * (50 cloud videos, 500MB/60min per-video, 1000-entry corpus, cross-device sync).

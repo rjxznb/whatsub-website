@@ -31,12 +31,17 @@ export const LINKS = {
   githubReleases: 'https://github.com/rjxznb/whatsub-releases/releases',
   jihulabReleases: 'https://jihulab.com/rjxznb-group/whatsub-release/-/releases',
 
-  // Companion browser extension — primary download path is server-side
-  // (/download/plugin on the license backend) which now resolves to the
-  // JihuLab Package Registry first and falls back to GitHub. The two
-  // links below are user-facing browse pages in case both the redirect
-  // chain AND the underlying APIs are unreachable — they land the user
-  // on a page where they can pick a .zip by hand.
+  // Companion browser extension — primary download path is the Edge
+  // Add-ons Store (official, one-click install for Edge users). Chrome
+  // is not yet listed; Chrome users fall back to /download/plugin on
+  // the license backend (which 302s to a .zip via JihuLab Package
+  // Registry → GitHub) and load it unpacked via chrome://extensions
+  // developer mode. The two browse-page links below are last-ditch
+  // fallbacks for when both the redirect chain AND the underlying APIs
+  // are unreachable — they land the user on a page where they can pick
+  // a .zip by hand.
+  edgeAddonStore:
+    'https://microsoftedge.microsoft.com/addons/detail/nnimcmjcjapacadannjbfdhkpklnbekj',
   jihulabPluginPackages: 'https://jihulab.com/rjxznb/whatsub-plugin/-/packages',
   githubPluginReleases: 'https://github.com/rjxznb/whatsub-plugin/releases/latest',
 
@@ -70,21 +75,26 @@ export const PRICING = {
 
 /**
  * whatSub Pro subscription tier. Recurring revenue covers the recurring
- * costs (OSS storage + CDN egress + iOS sub-server entitlement check) that
- * a one-time license can't fund. Same backend payment endpoint as PRICING;
- * differentiated by `product: 'sub_month' | 'sub_year'` on the create-order
- * request. Year price is monthly × 12 with ~40% off (¥144 → ¥88).
+ * costs (OSS storage + CDN egress + iOS sub-server entitlement check +
+ * **代付 DeepSeek LLM token bill**) that a one-time license can't fund.
+ * Same backend payment endpoint as PRICING; differentiated by
+ * `product: 'sub_month' | 'sub_year'` on the create-order request.
+ * Year price ≈ monthly × 12 × 0.64 — month 22 × 12 = 264 → 168 (≈ 36% off).
+ *
+ * Price change 2026-06-04: ¥12/¥88 → ¥22/¥168 to fund the managed-LLM
+ * relay (spec: `Get_Video/docs/superpowers/specs/2026-06-03-whatsub-managed-llm-relay.md`).
+ * No existing subscribers — app was still TestFlight-only at the change.
  */
 export const SUBSCRIPTION = {
-  monthlyAmount: '¥12',
-  yearlyAmount: '¥88',
-  yearlySavingsLabel: '比月付省 ¥56 (约 40% off)',
+  monthlyAmount: '¥22',
+  yearlyAmount: '¥168',
+  yearlySavingsLabel: '比月付省 ¥96 (约 36% off)',
   label: 'whatSub Pro · 解锁更多容量',
   features: [
+    '🆕 内置 LLM（DeepSeek）零配置开箱即用，不用自己申请 key',
     '云端视频 50 个（免费 3 个）',
     '单个视频 500MB / 60 分钟（免费 100MB / 20 分钟）',
     '个人语料库 1000 条（免费 50 条）',
-    '一份订阅可在 3 台设备同时使用',
     'iOS / 桌面 / 浏览器插件 全平台通用',
     '随时可在支付宝订单中关闭，到期自然结束',
     '使用中遇到问题，客服协助解决',
