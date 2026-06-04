@@ -91,7 +91,8 @@ export const SUBSCRIPTION = {
   yearlySavingsLabel: '比月付省 ¥96 (约 36% off)',
   label: 'whatSub Pro · 解锁更多容量',
   features: [
-    '🆕 内置 LLM（DeepSeek）零配置开箱即用，不用自己申请 key',
+    '🆕 内置 DeepSeek（零配置开箱即用）',
+    'AI 视频解析月度 ≈ 130 次（免费一次性 200K token 体验包）',
     '云端视频 50 个（免费 3 个）',
     '单个视频 500MB / 60 分钟（免费 100MB / 20 分钟）',
     '个人语料库 1000 条（免费 50 条）',

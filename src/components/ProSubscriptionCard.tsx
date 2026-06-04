@@ -59,10 +59,10 @@ export function ProSubscriptionCard() {
           className="reveal mb-3 max-w-[900px] font-bold leading-[1.05] tracking-[-0.01em] text-ink"
           style={{ fontSize: 'clamp(30px, 6.5vw, 56px)' }}
         >
-          想用更大的云端额度？<span className="text-accent">whatSub Pro</span>
+          不想自己折腾 API？<span className="text-accent">whatSub Pro</span>
         </h2>
-        <p className="reveal reveal-delay-1 mb-10 max-w-[600px] text-base text-[--ink-soft]">
-          手机端云端视频库的额度 + 单个视频大小 / 时长上限，订阅后立刻提升。一份订阅，桌面 / 插件 / iOS 全平台共用。
+        <p className="reveal reveal-delay-1 mb-10 max-w-[640px] text-base text-[--ink-soft]">
+          订阅后内置 DeepSeek 中转，不用注册 / 实名 / 充值。月度 ≈ 130 次 AI 视频解析 + 云端视频 50 个 + 个人语料 1000 条；桌面 / 浏览器插件 / iOS 一份订阅全平台共用。
         </p>
 
         <div
