@@ -66,7 +66,22 @@ function reasonToCN(reason: string): string {
   }
 }
 
-export function Pricing() {
+/** `variant` controls how the component renders its outer chrome:
+ *  - "standalone" (default): own <section> + page-level <h2> + PromoBanner above.
+ *    Used on /mobile and as a fallback for any caller that just wants
+ *    the full standalone section.
+ *  - "compact": NO section, NO h2, NO PromoBanner. Renders just the
+ *    inner card box so a parent (CombinedPricing) can drop two cards
+ *    side-by-side inside one shared section + heading. PromoBanner is
+ *    dropped because compact mode is only used on the home page where
+ *    the user typically lands without a promo URL; the standalone view
+ *    on /mobile keeps its full promo flow intact.
+ *  2026-06-04 (combined pricing module). */
+export function Pricing({
+  variant = 'standalone',
+}: {
+  variant?: 'standalone' | 'compact';
+} = {}) {
   const ref = useReveal<HTMLElement>();
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
@@ -144,26 +159,16 @@ export function Pricing() {
     ? `立即购买 · ${formatCny(state.finalPrice)} 跳转支付宝`
     : '立即购买 · 跳转支付宝';
 
-  return (
-    <section
-      ref={ref}
-      id="pricing"
-      className="bg-[--bg-soft] px-6 py-24 sm:px-10 sm:py-32 lg:px-16"
+  // The actual card markup, shared between both render modes.
+  const card = (
+    <div
+      className={
+        (variant === 'compact'
+          ? 'rounded-2xl border border-[--hairline-strong] bg-[--bg-elev] p-7 sm:p-9'
+          : 'reveal reveal-delay-1 mx-auto max-w-[440px] rounded-2xl border border-[--hairline-strong] bg-[--bg-elev] p-7 sm:p-9')
+      }
+      style={{ boxShadow: '0 0 80px rgba(59,155,255,0.05)' }}
     >
-      <div className="mx-auto max-w-[1200px]">
-        <h2
-          className="reveal mb-10 max-w-[900px] font-bold leading-[1.05] tracking-[-0.01em] text-ink"
-          style={{ fontSize: 'clamp(30px, 6.5vw, 72px)' }}
-        >
-          一份授权,<span className="text-accent">3 台设备</span>
-        </h2>
-
-        <PromoBanner state={state} />
-
-        <div
-          className="reveal reveal-delay-1 mx-auto max-w-[440px] rounded-2xl border border-[--hairline-strong] bg-[--bg-elev] p-7 sm:p-9"
-          style={{ boxShadow: '0 0 80px rgba(59,155,255,0.05)' }}
-        >
           <p className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-[--ink-faint]">
             {priceTagLabel(state)}
           </p>
@@ -263,7 +268,37 @@ export function Pricing() {
             {' · '}
             数字商品售出不退
           </p>
-        </div>
+    </div>
+  );
+
+  // Compact mode: just the card (CombinedPricing supplies the section
+  // wrapper + heading + promo banner-equivalent affordance). The active
+  // promo state is still respected — price/buyButtonLabel above bake it
+  // in — so applying ?promo=XHS_EARLY in the URL still discounts the
+  // buyout card inside the combined module. PromoBanner is intentionally
+  // omitted in compact (the standalone /home view is what's URL-promo'd
+  // historically; we keep the banner there).
+  if (variant === 'compact') {
+    return card;
+  }
+
+  return (
+    <section
+      ref={ref}
+      id="pricing"
+      className="bg-[--bg-soft] px-6 py-24 sm:px-10 sm:py-32 lg:px-16"
+    >
+      <div className="mx-auto max-w-[1200px]">
+        <h2
+          className="reveal mb-10 max-w-[900px] font-bold leading-[1.05] tracking-[-0.01em] text-ink"
+          style={{ fontSize: 'clamp(30px, 6.5vw, 72px)' }}
+        >
+          一份授权,<span className="text-accent">3 台设备</span>
+        </h2>
+
+        <PromoBanner state={state} />
+
+        {card}
       </div>
     </section>
   );

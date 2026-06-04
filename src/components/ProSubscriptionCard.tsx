@@ -20,7 +20,16 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * web — the card surfaces this with a small "iOS 用户请在 app 内订阅" note.
  * No UA sniff (users on iOS Safari will see the note; non-iOS users ignore it).
  */
-export function ProSubscriptionCard() {
+/** `variant`: see `Pricing.tsx` for the symmetric pattern. Default
+ *  "standalone" keeps the existing /mobile page behavior; "compact"
+ *  drops the section + h2 + sub-paragraph so CombinedPricing can place
+ *  this card next to the buyout card under one shared heading.
+ *  2026-06-04 (combined pricing module). */
+export function ProSubscriptionCard({
+  variant = 'standalone',
+}: {
+  variant?: 'standalone' | 'compact';
+} = {}) {
   const ref = useReveal<HTMLElement>();
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
@@ -48,27 +57,16 @@ export function ProSubscriptionCard() {
     }
   };
 
-  return (
-    <section
-      ref={ref}
-      id="pro"
-      className="bg-[--bg-soft] px-6 py-24 sm:px-10 sm:py-32 lg:px-16"
+  // Card markup, shared between both render modes.
+  const card = (
+    <div
+      className={
+        variant === 'compact'
+          ? 'rounded-2xl border border-[--hairline-strong] bg-[--bg-elev] p-7 sm:p-9'
+          : 'reveal reveal-delay-1 mx-auto max-w-[440px] rounded-2xl border border-[--hairline-strong] bg-[--bg-elev] p-7 sm:p-9'
+      }
+      style={{ boxShadow: '0 0 80px rgba(59,155,255,0.05)' }}
     >
-      <div className="mx-auto max-w-[1200px]">
-        <h2
-          className="reveal mb-3 max-w-[900px] font-bold leading-[1.05] tracking-[-0.01em] text-ink"
-          style={{ fontSize: 'clamp(30px, 6.5vw, 56px)' }}
-        >
-          不想自己折腾 API？<span className="text-accent">whatSub Pro</span>
-        </h2>
-        <p className="reveal reveal-delay-1 mb-10 max-w-[640px] text-base text-[--ink-soft]">
-          订阅后内置 DeepSeek 中转，不用注册 / 实名 / 充值。月度 ≈ 130 次 AI 视频解析 + 云端视频 50 个 + 个人语料 1000 条；桌面 / 浏览器插件 / iOS 一份订阅全平台共用。
-        </p>
-
-        <div
-          className="reveal reveal-delay-1 mx-auto max-w-[440px] rounded-2xl border border-[--hairline-strong] bg-[--bg-elev] p-7 sm:p-9"
-          style={{ boxShadow: '0 0 80px rgba(59,155,255,0.05)' }}
-        >
           <p className="mb-3 flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.2em] text-accent">
             <Star className="h-3 w-3" fill="currentColor" strokeWidth={0} />
             订阅
@@ -154,7 +152,31 @@ export function ProSubscriptionCard() {
           <p className="text-center text-xs text-[--ink-faint]">
             随时可在支付宝订单中关闭 · 到期自然结束
           </p>
-        </div>
+    </div>
+  );
+
+  if (variant === 'compact') {
+    return card;
+  }
+
+  return (
+    <section
+      ref={ref}
+      id="pro"
+      className="bg-[--bg-soft] px-6 py-24 sm:px-10 sm:py-32 lg:px-16"
+    >
+      <div className="mx-auto max-w-[1200px]">
+        <h2
+          className="reveal mb-3 max-w-[900px] font-bold leading-[1.05] tracking-[-0.01em] text-ink"
+          style={{ fontSize: 'clamp(30px, 6.5vw, 56px)' }}
+        >
+          不想自己折腾 API？<span className="text-accent">whatSub Pro</span>
+        </h2>
+        <p className="reveal reveal-delay-1 mb-10 max-w-[640px] text-base text-[--ink-soft]">
+          订阅后内置 DeepSeek 中转，不用注册 / 实名 / 充值。月度 ≈ 130 次 AI 视频解析 + 云端视频 50 个 + 个人语料 1000 条；桌面 / 浏览器插件 / iOS 一份订阅全平台共用。
+        </p>
+
+        {card}
       </div>
     </section>
   );
