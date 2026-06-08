@@ -66,7 +66,7 @@ export default function PrivacyPage() {
               <ul className="list-disc space-y-2 pl-6">
                 <li>YouTube 视频或本地视频，<strong className="text-ink">在你电脑上播放和处理</strong></li>
                 <li>语音识别（Whisper 模型）<strong className="text-ink">在你电脑上完成</strong>，不发送任何音频数据到外部</li>
-                <li>唯一会离开你电脑的是<strong className="text-ink">识别后的字幕文本</strong>——它会发送给你自己配置的大模型账号（如 ChatGPT、DeepSeek）翻译成中文</li>
+                <li>唯一会离开你电脑的是<strong className="text-ink">识别后的字幕文本</strong>——它会发送给你自己配置的大模型账号翻译成中文</li>
                 <li>我们的服务器<strong className="text-ink">不接触</strong>视频、音频，也不接触字幕文本</li>
               </ul>
             </Section>
@@ -86,7 +86,7 @@ export default function PrivacyPage() {
               <ul className="list-disc space-y-2 pl-6">
                 <li><strong className="text-ink">支付宝</strong>——处理桌面端付款。</li>
                 <li><strong className="text-ink">Apple App Store / App 内购买</strong>——处理 iOS 端付款与订阅，并向我们提供交易凭证以同步解锁状态。</li>
-                <li><strong className="text-ink">大模型服务商</strong>（OpenAI / DeepSeek / 智谱 / Claude / Kimi / Gemini / 通义 / SiliconFlow / 自部署 Ollama 等，由你自选）——翻译你的字幕文本。</li>
+                <li><strong className="text-ink">你自选的大模型服务商</strong>（由你直接配置 API Key 与 Base URL，支持十余家主流平台）——翻译你的字幕文本。</li>
                 <li><strong className="text-ink">QQ 邮箱（SMTP）</strong>——发送授权码邮件。</li>
                 <li><strong className="text-ink">阿里云（北京）</strong>——我们的服务器托管商。</li>
               </ul>

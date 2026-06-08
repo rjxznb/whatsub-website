@@ -120,7 +120,7 @@ export default function TermsPage() {
 
             <Section title="六、关于翻译功能">
               <p>
-                whatSub 的翻译功能依赖你自选的大模型服务商（OpenAI / DeepSeek / 智谱等）。你需要：
+                whatSub 的翻译功能依赖你自选的大模型服务商。你需要：
               </p>
               <ul className="list-disc space-y-2 pl-6">
                 <li>自己注册大模型账号并获取 API key</li>

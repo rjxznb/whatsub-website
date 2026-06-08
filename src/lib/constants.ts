@@ -81,7 +81,7 @@ export const PRICING = {
 /**
  * whatSub Pro subscription tier. Recurring revenue covers the recurring
  * costs (OSS storage + CDN egress + iOS sub-server entitlement check +
- * **代付 DeepSeek LLM token bill**) that a one-time license can't fund.
+ * **代付 LLM token bill**) that a one-time license can't fund.
  * Same backend payment endpoint as PRICING; differentiated by
  * `product: 'sub_month' | 'sub_year'` on the create-order request.
  * Year price ≈ monthly × 12 × 0.64 — month 22 × 12 = 264 → 168 (≈ 36% off).
@@ -96,7 +96,10 @@ export const SUBSCRIPTION = {
   yearlySavingsLabel: '比月付省 ¥96 (约 36% off)',
   label: 'whatSub Pro · 解锁更多容量',
   features: [
-    '内置 DeepSeek（零配置开箱即用）',
+    // 2026-06-08 — was '内置 DeepSeek（零配置开箱即用）'. 不再点名具体
+    // 模型,中转栈日后可能轮换(挑成本/可用性最优的供应商),硬挂某
+    // 一家会被读成产品承诺,日后切换得改文案 + 处理用户异议。
+    '内置 AI（零配置开箱即用）',
     'AI 视频解析月度 ≈ 130 次（免费一次性 200K token 体验包）',
     '云端视频 50 个（免费 3 个）',
     '单个视频 500MB / 60 分钟（免费 100MB / 20 分钟）',

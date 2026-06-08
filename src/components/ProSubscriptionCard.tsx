@@ -250,7 +250,16 @@ export function ProSubscriptionCard({
           不想自己折腾 API？<span className="text-accent">whatSub Pro</span>
         </h2>
         <p className="reveal reveal-delay-1 mb-10 max-w-[640px] text-base text-[--ink-soft]">
-          订阅后内置 DeepSeek 中转，不用注册 / 实名 / 充值。月度 ≈ 130 次 AI 视频解析 + 云端视频 50 个 + 个人语料 1000 条；桌面 / 浏览器插件 / iOS 一份订阅全平台共用。
+          订阅后内置 AI 中转，不用注册 / 实名 / 充值。月度 ≈ 130 次 AI 视频解析 + 云端视频 50 个 + 个人语料 1000 条；桌面 / 浏览器插件 / iOS 一份订阅全平台共用。
+          {/* 8 折福利在介绍段的段尾(同首页 CombinedPricing 的呈现模式)。
+              用 ink-soft 收住,"8 折"两字加粗 ink 强调,跟卡片正文里的
+              琥珀色 ★ 小字 + 自动检测后的橙色 banner 形成三档密度。
+              2026-06-08。 */}
+          {' '}
+          <span className="text-[--ink-soft]">
+            已持有桌面端 ¥59.9 永久授权的邮箱订阅自动享{' '}
+            <strong className="font-semibold text-ink">8 折</strong>。
+          </span>
         </p>
 
         {card}
