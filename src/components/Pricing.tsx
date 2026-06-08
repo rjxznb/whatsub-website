@@ -197,7 +197,15 @@ export function Pricing({
               </span>
             ) : null}
           </div>
-          <p className="mb-8 text-sm text-[--ink-soft]">{PRICING.label}</p>
+          <p className="mb-1.5 text-sm text-[--ink-soft]">{PRICING.label}</p>
+          {/* 8 折小字行 (2026-06-08) — 紧贴价格下方,告知买断 → Pro 订阅
+              的折扣权益。琥珀色低调强调,跟下方功能列表的蓝色 Check 区分
+              开,读者扫过去能看到但不会盖过 "永久授权" 主标签。功能列表
+              里同一条 (PRICING.features) 是主要 sales pitch;这里是"价格
+              旁的小贴士",照顾只看价格不看 features 的快读用户。 */}
+          <p className="mb-8 text-xs text-amber-300/80">
+            ★ 日后升级 Pro 订阅自动 8 折（买断用户专属）
+          </p>
 
           <ul className="mb-8 space-y-3">
             {PRICING.features.map((f) => (
