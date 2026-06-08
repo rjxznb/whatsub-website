@@ -47,20 +47,13 @@ export function FreeTierCard({
 
       <p className="mb-8 text-sm text-[--ink-soft]">{FREE_TIER.label}</p>
 
-      <ul className="mb-8 space-y-4">
+      <ul className="mb-8 space-y-3">
         {FREE_TIER.features.map((f) => (
-          <li key={f.title} className="flex items-start gap-3 text-sm">
+          <li key={f} className="flex items-start gap-3 text-sm text-[--ink-soft]">
             <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-400/15 text-emerald-400">
               <Check className="h-3 w-3" strokeWidth={2.5} />
             </span>
-            <div className="flex-1">
-              <div className="font-medium text-ink">{f.title}</div>
-              {f.desc ? (
-                <div className="mt-0.5 text-xs leading-relaxed text-[--ink-muted]">
-                  {f.desc}
-                </div>
-              ) : null}
-            </div>
+            <span>{f}</span>
           </li>
         ))}
       </ul>

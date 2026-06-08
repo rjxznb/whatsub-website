@@ -79,37 +79,21 @@ export const PRICING = {
 } as const;
 
 /**
- * Shared feature-row shape used by both SUBSCRIPTION and FREE_TIER.
- * `title` is the one-line headline (rendered with the ✓ icon + bold);
- * `desc` is an optional plain-language explanation rendered as a smaller
- * muted line directly below — used to demystify jargon ("云端视频"、
- * "500MB"、"语料库") for first-time visitors who haven't used the app.
- * The `desc` field was added 2026-06-08 after user feedback that bare
- * quota numbers weren't self-explanatory.
- */
-export interface TierFeature {
-  title: string;
-  desc?: string;
-}
-
-/**
  * whatSub Pro subscription tier. Recurring revenue covers the recurring
  * costs (OSS storage + CDN egress + iOS sub-server entitlement check +
  * **代付 LLM token bill**) that a one-time license can't fund.
  * Same backend payment endpoint as PRICING; differentiated by
  * `product: 'sub_month' | 'sub_year'` on the create-order request.
- * Year price ≈ monthly × 12 × 0.64 — month 22 × 12 = 264 → 168 (≈ 36% off).
  *
- * Price change 2026-06-04: ¥12/¥88 → ¥22/¥168 to fund the managed-LLM
- * relay (spec: `Get_Video/docs/superpowers/specs/2026-06-03-whatsub-managed-llm-relay.md`).
- * No existing subscribers — app was still TestFlight-only at the change.
+ * 2026-06-08 — features rewritten as single self-explanatory sentences
+ * (was bare nouns like "云端视频 50 个"). Each line now stands on its own
+ * with the same big body-text size as the rest of the card; no
+ * secondary small-text descriptions. Length kept under ~30 zh chars so
+ * each bullet wraps at most once on the narrowest card width.
  *
- * 2026-06-08 — features refactored to `{title, desc?}` per user request to
- * explain what each quota term means (云端视频 / 单视频 500MB / 语料库 …
- * weren't self-evident to first-time visitors). The "(免费 X)" parenthetical
- * counterparts were moved out to FREE_TIER below, presented as a separate
- * ¥0 card so the free entitlements don't look like footnotes on the Pro
- * card.
+ * The "(免费 X)" parentheticals that used to live here moved out to
+ * FREE_TIER below — presented as a separate ¥0 card alongside this one,
+ * so the free entitlements stop looking like footnotes on the Pro card.
  */
 export const SUBSCRIPTION = {
   monthlyAmount: '¥22',
@@ -117,38 +101,15 @@ export const SUBSCRIPTION = {
   yearlySavingsLabel: '比月付省 ¥96 (约 36% off)',
   label: 'whatSub Pro · 解锁更多容量',
   features: [
-    {
-      title: '内置 AI · 零配置开箱即用',
-      desc: '不用自己注册大模型账号、不用充值',
-    },
-    {
-      title: 'AI 解析视频 · 月度 ≈ 130 次',
-      desc: '一次"解析" = 整段字幕翻译成中文 + AI 自动标黄重点词 + 提取要点摘要',
-    },
-    {
-      title: '云端视频 · 50 个',
-      desc: '你导入的视频(含双语字幕和 AI 分析结果)存在云端,iOS / 桌面 / 浏览器插件之间无缝同步,换设备秒续',
-    },
-    {
-      title: '单视频 500MB / 60 分钟',
-      desc: '覆盖大多数 1 小时纪录片、TED 长讲、在线课程',
-    },
-    {
-      title: '个人语料库 · 1000 条',
-      desc: '长按字幕收藏的英文短语 + 中文解释 + 出处自动汇成你的私人复习库,卡片测验和 AI 口语陪练都从这里抽题',
-    },
-    {
-      title: 'iOS / 桌面 / 浏览器插件 · 全平台共用',
-      desc: '一份订阅,同邮箱登录三端通用',
-    },
-    {
-      title: '随时在支付宝订单中关闭',
-      desc: '到期自然结束,不自动续费',
-    },
-    {
-      title: '使用中遇到问题，客服协助解决',
-    },
-  ] as readonly TierFeature[],
+    '内置 AI 中转，零配置开箱即用，不用自己注册大模型',
+    '每月约 130 次 AI 解析（整段字幕翻译 + 自动标黄重点）',
+    '云端视频 50 个，含字幕和 AI 分析，iOS / 桌面 / 插件同步',
+    '单视频上限 500MB / 60 分钟，覆盖 1 小时纪录片或长讲座',
+    '个人语料库 1000 条，收藏的短语自动组成你的复习库',
+    'iOS / 桌面 / 浏览器插件三端共用一份订阅',
+    '随时在支付宝订单中关闭，到期自然结束不续费',
+    '使用中遇到问题，客服协助解决',
+  ],
 } as const;
 
 /**
@@ -156,34 +117,20 @@ export const SUBSCRIPTION = {
  * 一张卡片,把过去藏在 SUBSCRIPTION.features 里"(免费 X)"括号注释里的
  * 数字搬出来正面展示。意图:新用户能直接看清"我不付费能拿到什么",
  * 而不是先读 Pro 卡片再推算"那免费档是不是只够 1/16"。
+ *
+ * 同 SUBSCRIPTION.features,features 是一句话自解释的 string[],不再带
+ * 小字 desc(2026-06-08 用户反馈"用大字给出,不要加小字,只不过精简
+ * 一点,就一句话描述出来")。
  */
 export const FREE_TIER = {
   amount: '¥0',
-  label: '安装即开即用,不订阅',
+  label: '安装即开即用，不订阅、不付费',
   features: [
-    {
-      title: '全部核心功能 · 即装即用',
-      desc: '双语字幕、AI 标黄、跟读、卡片测验、AI 口语陪练,免费档全都能用',
-    },
-    {
-      title: 'AI 体验额度 · 一次性 200K token',
-      desc: '约 4-5 个视频的 AI 解析量,体验后再决定要不要长期开 Pro',
-    },
-    {
-      title: '云端视频 · 3 个',
-      desc: '先试 3 个看是不是你要的工具,够试不够攒',
-    },
-    {
-      title: '单视频 100MB / 20 分钟',
-      desc: '一段 TED 短讲、vlog 或公开课片段完全够用',
-    },
-    {
-      title: '个人语料库 · 50 条',
-      desc: '熟悉一下收藏 → 复习的节奏,看是否符合你的学习习惯',
-    },
-    {
-      title: 'iOS / 桌面 / 浏览器插件 · 全平台共用',
-      desc: '同邮箱登录即可,免费档也同步',
-    },
-  ] as readonly TierFeature[],
+    '全部核心功能即装即用（双语字幕 / AI 标黄 / 跟读 / 卡片测验 / AI 口语陪练）',
+    '一次性 200K token AI 体验额度，约够解析 4-5 个视频',
+    '云端视频 3 个，先试 3 个看是不是你要的工具',
+    '单视频上限 100MB / 20 分钟，TED 短讲和 vlog 够用',
+    '个人语料库 50 条，熟悉收藏和复习的节奏',
+    'iOS / 桌面 / 浏览器插件三端共用，同邮箱登录即同步',
+  ],
 } as const;

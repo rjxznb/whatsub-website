@@ -1,26 +1,25 @@
 'use client';
 
 import { useReveal } from '@/hooks/useReveal';
+import { FreeTierCard } from './FreeTierCard';
 import { Pricing } from './Pricing';
 import { ProSubscriptionCard } from './ProSubscriptionCard';
 
 /**
- * Home-page pricing module — both purchase options inside ONE section.
+ * Home-page pricing module — three tiers inside ONE section (2026-06-08).
  *
- *   ┌── selector column 1 ──┐  ┌── selector column 2 ──┐
- *   │  Pricing (compact)    │  │  ProSubscriptionCard  │
- *   │  ¥59.9 永久授权        │  │  ¥22/月 · ¥168/年     │
- *   │  BYOK / 桌面 / 3 设备 │  │  托管 LLM + 高配额    │
- *   └───────────────────────┘  └───────────────────────┘
+ *   ┌── Free ──────────┐  ┌── Buyout ───────┐  ┌── Pro ──────────┐
+ *   │ ¥0               │  │ ¥59.9 永久      │  │ ¥22/月 · ¥168/年│
+ *   │ 安装即用全核心   │  │ BYOK / 桌面     │  │ 托管 AI + 高配额 │
+ *   └──────────────────┘  └─────────────────┘  └─────────────────┘
  *
- * Each card carries its own state (promo for buyout, plan toggle for
- * subscription) — we just share the section wrapper + heading so the
- * user sees "both options on one page" rather than scrolling through
- * two near-identical sections.
+ * Was 2 cards (buyout + Pro). Free was added 2026-06-08 after user feedback
+ * that visitors couldn't see what they get without paying. Each card
+ * carries its own state (promo for buyout, plan toggle + email pricing
+ * lookup for Pro, info-only for Free) — section wrapper + heading shared.
  *
- * Used on `/` only. `/mobile` still uses the standalone
- * `<ProSubscriptionCard />` since there's no parallel buyout offer
- * there. 2026-06-04 (combined pricing module).
+ * Used on `/` only. `/mobile` shows just Free + Pro (no buyout — desktop
+ * client only).
  */
 export function CombinedPricing() {
   const ref = useReveal<HTMLElement>();
@@ -36,8 +35,11 @@ export function CombinedPricing() {
           className="reveal mb-3 max-w-[900px] font-bold leading-[1.05] tracking-[-0.01em] text-ink"
           style={{ fontSize: 'clamp(30px, 6.5vw, 64px)' }}
         >
-          买断 <span className="text-[--ink-faint]">或</span>{' '}
-          <span className="text-accent">订阅</span>，任选其一
+          <span className="text-emerald-400">免费</span>{' '}
+          <span className="text-[--ink-faint]">/</span>{' '}
+          买断{' '}
+          <span className="text-[--ink-faint]">/</span>{' '}
+          <span className="text-accent">订阅</span>，按需选其一
         </h2>
         {/* Two-option intro — formal register (no 你, objective voice),
             parallel structure so the two paragraphs read side-by-side
@@ -72,16 +74,17 @@ export function CombinedPricing() {
               JSX text inserts a literal space at every source-line
               break, which on Chinese (no inter-word spaces) leaves
               visible gaps mid-sentence ("与 成本"). String literals
-              are immune. */}
+              are immune.
+
+              Three paragraphs since 2026-06-08 — free / buyout / Pro,
+              matching the three cards below in the same order. */}
+          <p>
+            <strong className="font-semibold text-ink">免费 ¥0</strong>
+            {' —— 下载安装即用,核心功能(双语字幕、AI 标黄、跟读、卡片测验、AI 口语陪练)完整开放。云端视频 3 个 + 个人语料库 50 条 + 一次性 200K token AI 体验,够你完整试几个视频判断是不是要的工具。'}
+          </p>
           <p>
             <strong className="font-semibold text-ink">一次买断 ¥59.9</strong>
             {' —— 桌面客户端永久授权,3 台设备同步激活。翻译与 AI 分析由你自选的大模型服务提供,按用量直接结算给服务商,单视频成本通常不足一毛;数据流向与成本支出完全自主可控。'}
-            {/* 8 折福利的"段中提示"——夹在段末,与正文同色但加粗 ink 强调
-                "8 折"两字,买断买家读完优惠条款立即看到"日后升级 Pro 也有
-                额外让利",降低决策摩擦。位置故意不放段首(段首该让"买断"
-                主词站住),也不放卡片里(那里已有 ★ amber 小字 + 中段
-                bullet 各一处)。三处不同密度的呈现避免任一处过载。
-                2026-06-08。 */}
             {' '}
             <span className="text-[--ink-soft]">
               日后升级 Pro 订阅自动享{' '}
@@ -94,7 +97,11 @@ export function CombinedPricing() {
           </p>
         </div>
 
-        <div className="reveal reveal-delay-2 grid grid-cols-1 items-start gap-6 lg:grid-cols-2 lg:gap-8">
+        {/* 3 列网格(lg 屏);中屏 1200px 容器下每张 ≈ 370px 宽,信息密度
+            刚好。窄屏自动 grid-cols-1 单列堆叠。Free 在最左(入门 → 中间
+            买断 → 右侧最贵 Pro),价格从低到高的视觉节奏。 */}
+        <div className="reveal reveal-delay-2 grid grid-cols-1 items-start gap-6 lg:grid-cols-3 lg:gap-6">
+          <FreeTierCard variant="compact" />
           <Pricing variant="compact" />
           <ProSubscriptionCard variant="compact" />
         </div>
