@@ -185,13 +185,26 @@ export function ProSubscriptionCard({
 
           <p className="mb-8 text-sm text-[--ink-soft]">{SUBSCRIPTION.label}</p>
 
-          <ul className="mb-8 space-y-3">
+          <ul className="mb-8 space-y-4">
             {SUBSCRIPTION.features.map((f) => (
-              <li key={f} className="flex items-start gap-3 text-sm text-[--ink-soft]">
+              <li key={f.title} className="flex items-start gap-3 text-sm">
                 <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
                   <Check className="h-3 w-3" strokeWidth={2.5} />
                 </span>
-                <span>{renderFeature(f)}</span>
+                <div className="flex-1">
+                  {/* Title — ink (full white) for scan-friendly hierarchy.
+                      Was --ink-soft when features were one-line strings;
+                      bumping to ink makes the title pop above the new
+                      desc line right below. */}
+                  <div className="font-medium text-ink">
+                    {renderFeature(f.title)}
+                  </div>
+                  {f.desc ? (
+                    <div className="mt-0.5 text-xs leading-relaxed text-[--ink-muted]">
+                      {f.desc}
+                    </div>
+                  ) : null}
+                </div>
               </li>
             ))}
           </ul>

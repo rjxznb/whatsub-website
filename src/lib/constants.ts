@@ -79,6 +79,20 @@ export const PRICING = {
 } as const;
 
 /**
+ * Shared feature-row shape used by both SUBSCRIPTION and FREE_TIER.
+ * `title` is the one-line headline (rendered with the ✓ icon + bold);
+ * `desc` is an optional plain-language explanation rendered as a smaller
+ * muted line directly below — used to demystify jargon ("云端视频"、
+ * "500MB"、"语料库") for first-time visitors who haven't used the app.
+ * The `desc` field was added 2026-06-08 after user feedback that bare
+ * quota numbers weren't self-explanatory.
+ */
+export interface TierFeature {
+  title: string;
+  desc?: string;
+}
+
+/**
  * whatSub Pro subscription tier. Recurring revenue covers the recurring
  * costs (OSS storage + CDN egress + iOS sub-server entitlement check +
  * **代付 LLM token bill**) that a one-time license can't fund.
@@ -89,6 +103,13 @@ export const PRICING = {
  * Price change 2026-06-04: ¥12/¥88 → ¥22/¥168 to fund the managed-LLM
  * relay (spec: `Get_Video/docs/superpowers/specs/2026-06-03-whatsub-managed-llm-relay.md`).
  * No existing subscribers — app was still TestFlight-only at the change.
+ *
+ * 2026-06-08 — features refactored to `{title, desc?}` per user request to
+ * explain what each quota term means (云端视频 / 单视频 500MB / 语料库 …
+ * weren't self-evident to first-time visitors). The "(免费 X)" parenthetical
+ * counterparts were moved out to FREE_TIER below, presented as a separate
+ * ¥0 card so the free entitlements don't look like footnotes on the Pro
+ * card.
  */
 export const SUBSCRIPTION = {
   monthlyAmount: '¥22',
@@ -96,16 +117,73 @@ export const SUBSCRIPTION = {
   yearlySavingsLabel: '比月付省 ¥96 (约 36% off)',
   label: 'whatSub Pro · 解锁更多容量',
   features: [
-    // 2026-06-08 — was '内置 DeepSeek（零配置开箱即用）'. 不再点名具体
-    // 模型,中转栈日后可能轮换(挑成本/可用性最优的供应商),硬挂某
-    // 一家会被读成产品承诺,日后切换得改文案 + 处理用户异议。
-    '内置 AI（零配置开箱即用）',
-    'AI 视频解析月度 ≈ 130 次（免费一次性 200K token 体验包）',
-    '云端视频 50 个（免费 3 个）',
-    '单个视频 500MB / 60 分钟（免费 100MB / 20 分钟）',
-    '个人语料库 1000 条（免费 50 条）',
-    'iOS / 桌面 / 浏览器插件 全平台通用',
-    '随时可在支付宝订单中关闭，到期自然结束',
-    '使用中遇到问题，客服协助解决',
-  ],
+    {
+      title: '内置 AI · 零配置开箱即用',
+      desc: '不用自己注册大模型账号、不用充值',
+    },
+    {
+      title: 'AI 解析视频 · 月度 ≈ 130 次',
+      desc: '一次"解析" = 整段字幕翻译成中文 + AI 自动标黄重点词 + 提取要点摘要',
+    },
+    {
+      title: '云端视频 · 50 个',
+      desc: '你导入的视频(含双语字幕和 AI 分析结果)存在云端,iOS / 桌面 / 浏览器插件之间无缝同步,换设备秒续',
+    },
+    {
+      title: '单视频 500MB / 60 分钟',
+      desc: '覆盖大多数 1 小时纪录片、TED 长讲、在线课程',
+    },
+    {
+      title: '个人语料库 · 1000 条',
+      desc: '长按字幕收藏的英文短语 + 中文解释 + 出处自动汇成你的私人复习库,卡片测验和 AI 口语陪练都从这里抽题',
+    },
+    {
+      title: 'iOS / 桌面 / 浏览器插件 · 全平台共用',
+      desc: '一份订阅,同邮箱登录三端通用',
+    },
+    {
+      title: '随时在支付宝订单中关闭',
+      desc: '到期自然结束,不自动续费',
+    },
+    {
+      title: '使用中遇到问题，客服协助解决',
+    },
+  ] as readonly TierFeature[],
+} as const;
+
+/**
+ * 0 元免费档 — 安装后的默认体验,所有人都能用。2026-06-08 拆出来单独
+ * 一张卡片,把过去藏在 SUBSCRIPTION.features 里"(免费 X)"括号注释里的
+ * 数字搬出来正面展示。意图:新用户能直接看清"我不付费能拿到什么",
+ * 而不是先读 Pro 卡片再推算"那免费档是不是只够 1/16"。
+ */
+export const FREE_TIER = {
+  amount: '¥0',
+  label: '安装即开即用,不订阅',
+  features: [
+    {
+      title: '全部核心功能 · 即装即用',
+      desc: '双语字幕、AI 标黄、跟读、卡片测验、AI 口语陪练,免费档全都能用',
+    },
+    {
+      title: 'AI 体验额度 · 一次性 200K token',
+      desc: '约 4-5 个视频的 AI 解析量,体验后再决定要不要长期开 Pro',
+    },
+    {
+      title: '云端视频 · 3 个',
+      desc: '先试 3 个看是不是你要的工具,够试不够攒',
+    },
+    {
+      title: '单视频 100MB / 20 分钟',
+      desc: '一段 TED 短讲、vlog 或公开课片段完全够用',
+    },
+    {
+      title: '个人语料库 · 50 条',
+      desc: '熟悉一下收藏 → 复习的节奏,看是否符合你的学习习惯',
+    },
+    {
+      title: 'iOS / 桌面 / 浏览器插件 · 全平台共用',
+      desc: '同邮箱登录即可,免费档也同步',
+    },
+  ] as readonly TierFeature[],
 } as const;
