@@ -81,6 +81,14 @@ export function CombinedPricing() {
           <p>
             <strong className="font-semibold text-ink">免费 ¥0</strong>
             {' —— 下载安装即用,核心功能(双语字幕、AI 标黄、跟读、卡片测验、AI 口语陪练)完整开放。云端视频 3 个 + 个人语料库 50 条 + 一次性 200K token AI 体验,够你完整试几个视频判断是不是要的工具。'}
+            {/* 「需要注意」 — 三端的免费档不是一回事:iOS / 浏览器插件永久免费,
+                桌面客户端只是 24h 试用,过了要买断或订阅才能用桌面端。
+                诚实说出来,避免桌面用户期待落空。2026-06-08。 */}
+            {' '}
+            <span className="text-[--ink-muted]">
+              <strong className="font-semibold text-[--ink-soft]">需要注意：</strong>
+              iOS 和浏览器插件的免费档永久可用;桌面客户端是首次免费试用 24 小时,试用期结束需买断或订阅 Pro 才能继续用。
+            </span>
           </p>
           <p>
             <strong className="font-semibold text-ink">一次买断 ¥59.9</strong>
@@ -90,10 +98,28 @@ export function CombinedPricing() {
               日后升级 Pro 订阅自动享{' '}
               <strong className="font-semibold text-ink">8 折</strong>。
             </span>
+            {/* 「需要注意」 — 诚实说出本档真实代价。买断的"门槛"是首次
+                得自己注册大模型账号 + 配 API Key(~3-5 分钟),之后所有
+                AI 调用按 token 用量自费付给服务商。--ink-muted 收住,
+                视觉权重低于卖点段落,但不让买家事后惊讶。2026-06-08。 */}
+            {' '}
+            <span className="text-[--ink-muted]">
+              <strong className="font-semibold text-[--ink-soft]">需要注意：</strong>
+              翻译和 AI 功能要你自己注册一个大模型账号、配置 API Key(首次约 3-5 分钟),之后按 token 用量自费支付给所选服务商。
+            </span>
           </p>
           <p>
             <strong className="font-semibold text-ink">订阅 Pro ¥22/月起</strong>
             {' —— 内置 AI 服务,即装即用,免去全部配置环节。同步开通手机端、浏览器插件的完整访问,云端视频与个人语料库容量更为宽裕;可随时在支付宝订单中关闭,无合约绑定。'}
+            {/* 同上 — Pro 的"代价"是按月/年持续付费,订阅停止后 Pro 容量
+                就回到免费档。诚实表达:不是"app 不能用了",而是"扩展额度
+                没了"。用户停付后核心功能仍在,这点不能含糊掉,否则会被
+                读成误导。2026-06-08。 */}
+            {' '}
+            <span className="text-[--ink-muted]">
+              <strong className="font-semibold text-[--ink-soft]">需要注意：</strong>
+              按月/年持续付费;订阅停止后 Pro 容量会回落到免费档(云端视频 50 → 3、语料库 1000 → 50、AI 也不再内置),核心功能仍可用但额度收窄。
+            </span>
           </p>
         </div>
 

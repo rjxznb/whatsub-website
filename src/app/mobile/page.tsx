@@ -56,6 +56,14 @@ export default function MobilePage() {
                   已持有桌面端 ¥59.9 永久授权的邮箱订阅自动享{' '}
                   <strong className="font-semibold text-ink">8 折</strong>。
                 </span>
+                {/* 「需要注意」 — 跟首页 CombinedPricing 同款诚实陈述:
+                    不是"app 不能用了",而是"Pro 容量回到免费档"。用户
+                    停付后核心功能仍可用,容量收窄。2026-06-08。 */}
+                {' '}
+                <span className="text-[--ink-muted]">
+                  <strong className="font-semibold text-[--ink-soft]">需要注意：</strong>
+                  按月/年持续付费;订阅停止后 Pro 容量会回落到免费档(云端视频 50 → 3、语料库 1000 → 50、AI 也不再内置),核心功能仍可用但额度收窄。
+                </span>
               </p>
             </div>
 
