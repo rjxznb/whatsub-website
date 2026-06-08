@@ -88,6 +88,44 @@ export async function createOrder(
   return res.json();
 }
 
+/**
+ * Sub-tier pricing for the 网站 Pro card. Optional `email` — when present
+ * AND that email owns a website license (买断 ¥59.9), the backend returns
+ * the 8 折 final price + a non-null `discountKey` so the UI can render a
+ * "买断用户专属 8 折" badge. Without email, prices come back at full price.
+ *
+ * Returns `null` on network failure — callers should fall back to the
+ * constants-file headline prices in that case (no discount surfaced if we
+ * can't confirm eligibility).
+ *
+ * Spec: 2026-06-08 license-holder Pro discount. Server-side enforced — the
+ * client never trusts a discounted price typed in by the user; this fetch
+ * is purely for UI display, and the actual order amount is recomputed by
+ * the server when create-order runs.
+ */
+export interface SubscriptionPricing {
+  isLicenseHolder: boolean;
+  discountKey: string | null;
+  discountRatio: number;
+  subMonth: { base: string; final: string };
+  subYear: { base: string; final: string };
+}
+
+export async function getSubscriptionPricing(
+  email?: string,
+): Promise<SubscriptionPricing | null> {
+  try {
+    const url = email
+      ? `${API_BASE}/payment/pricing?email=${encodeURIComponent(email)}`
+      : `${API_BASE}/payment/pricing`;
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
 export async function validatePromo(code: string): Promise<PromoValidation> {
   try {
     const res = await fetch(

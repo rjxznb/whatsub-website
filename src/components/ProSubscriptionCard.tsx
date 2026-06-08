@@ -1,12 +1,25 @@
 'use client';
 
 import { Check, Star } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useReveal } from '@/hooks/useReveal';
 import { LINKS, SUBSCRIPTION } from '@/lib/constants';
-import { createOrder, type SubProduct } from '@/lib/payment-api';
+import {
+  createOrder,
+  getSubscriptionPricing,
+  type SubProduct,
+  type SubscriptionPricing,
+} from '@/lib/payment-api';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Render a CNY price string in "¥X" form, accepting either bare numbers
+ *  ('22') or pre-formatted strings ('17.60'). Drops trailing zeros only
+ *  when there's no decimal part at all ("22" stays "22"; "17.60" stays
+ *  "17.60" — those cents matter to the user). */
+function fmtCny(n: string): string {
+  return `¥${n}`;
+}
 
 /**
  * whatSub Pro 订阅 card — Alipay flow for ¥22/月 or ¥168/年 (was ¥12/¥88
@@ -36,6 +49,45 @@ export function ProSubscriptionCard({
   const [error, setError] = useState<string | null>(null);
   // Default to yearly — flagged as ~40% savings vs monthly × 12.
   const [plan, setPlan] = useState<SubProduct>('sub_year');
+
+  // License-holder 8 折 (2026-06-08). We poll the backend whenever the
+  // typed email becomes "well-formed" — there's no separate "check"
+  // button. Debounced 500ms so a fast typist doesn't fire one fetch
+  // per keystroke. `null` = not yet looked up OR network failure (UI
+  // falls back to constants headline prices). `isLicenseHolder=true`
+  // surfaces the discount badge + crossed-out base price.
+  const [pricing, setPricing] = useState<SubscriptionPricing | null>(null);
+  useEffect(() => {
+    if (!EMAIL_RE.test(email)) {
+      setPricing(null);
+      return;
+    }
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      const p = await getSubscriptionPricing(email);
+      if (!cancelled) setPricing(p);
+    }, 500);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [email]);
+
+  /// Effective display price for a plan: backend-discounted when license
+  /// holder, else the constants-file headline (which already matches the
+  /// backend env price 1:1 — server is still the source of truth at
+  /// order-create time).
+  const monthDisplay = pricing?.isLicenseHolder
+    ? fmtCny(pricing.subMonth.final)
+    : SUBSCRIPTION.monthlyAmount;
+  const yearDisplay = pricing?.isLicenseHolder
+    ? fmtCny(pricing.subYear.final)
+    : SUBSCRIPTION.yearlyAmount;
+  const monthBaseDisplay = SUBSCRIPTION.monthlyAmount; // for strike-through
+  const yearBaseDisplay = SUBSCRIPTION.yearlyAmount;
+  const showDiscount = pricing?.isLicenseHolder ?? false;
+  const planDisplay = plan === 'sub_year' ? yearDisplay : monthDisplay;
+  const planPeriod = plan === 'sub_year' ? '/年' : '/月';
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,6 +124,21 @@ export function ProSubscriptionCard({
             订阅
           </p>
 
+          {/* License-holder 8 折 badge — visible once the typed email is
+              confirmed as a 买断 owner. Sits ABOVE the plan toggle so it
+              explains the discounted numbers in the toggle below. */}
+          {showDiscount && (
+            <div className="mb-4 flex items-center gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2.5 text-xs text-amber-200">
+              <Star className="h-3.5 w-3.5 shrink-0" fill="currentColor" strokeWidth={0} />
+              <span>
+                <span className="font-semibold">买断用户专属 8 折</span>
+                <span className="ml-1.5 text-amber-200/80">
+                  检测到 <span className="font-mono">{email}</span> 拥有永久授权，价格自动折扣
+                </span>
+              </span>
+            </div>
+          )}
+
           {/* Plan toggle (月 / 年). Yearly is default; bumps the savings pill. */}
           <div className="mb-5 grid grid-cols-2 gap-2">
             <button
@@ -85,7 +152,12 @@ export function ProSubscriptionCard({
             >
               <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-[--ink-faint]">月度</div>
               <div className="mt-0.5 text-2xl font-bold text-ink">
-                {SUBSCRIPTION.monthlyAmount}
+                {monthDisplay}
+                {showDiscount && (
+                  <span className="ml-1.5 align-middle text-xs font-normal text-[--ink-faint] line-through">
+                    {monthBaseDisplay}
+                  </span>
+                )}
                 <span className="text-sm font-normal text-[--ink-faint]"> /月</span>
               </div>
             </button>
@@ -100,7 +172,12 @@ export function ProSubscriptionCard({
             >
               <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-accent">年度 · 省 40%</div>
               <div className="mt-0.5 text-2xl font-bold text-ink">
-                {SUBSCRIPTION.yearlyAmount}
+                {yearDisplay}
+                {showDiscount && (
+                  <span className="ml-1.5 align-middle text-xs font-normal text-[--ink-faint] line-through">
+                    {yearBaseDisplay}
+                  </span>
+                )}
                 <span className="text-sm font-normal text-[--ink-faint]"> /年</span>
               </div>
             </button>
@@ -139,7 +216,7 @@ export function ProSubscriptionCard({
               <Star className="h-4 w-4" fill="currentColor" strokeWidth={0} />
               {busy
                 ? '处理中...'
-                : `立即订阅 · ${plan === 'sub_year' ? SUBSCRIPTION.yearlyAmount + '/年' : SUBSCRIPTION.monthlyAmount + '/月'} 跳转支付宝`}
+                : `立即订阅 · ${planDisplay}${planPeriod} 跳转支付宝`}
             </button>
             {error ? (
               <p className="text-center text-xs text-red-400">{error}</p>
