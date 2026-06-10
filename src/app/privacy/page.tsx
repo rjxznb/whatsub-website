@@ -86,10 +86,16 @@ export default function PrivacyPage() {
               <ul className="list-disc space-y-2 pl-6">
                 <li><strong className="text-ink">支付宝</strong>——处理桌面端付款。</li>
                 <li><strong className="text-ink">Apple App Store / App 内购买</strong>——处理 iOS 端付款与订阅，并向我们提供交易凭证以同步解锁状态。</li>
-                <li><strong className="text-ink">你自选的大模型服务商</strong>（由你直接配置 API Key 与 Base URL，支持十余家主流平台）——翻译你的字幕文本。</li>
+                <li>
+                  <strong className="text-ink">深度求索（DeepSeek）</strong>——当你使用 iOS 端「whatSub 托管 AI」功能时，我们通过自有服务器将字幕、识别后的语音文本、OCR 文本中转给深度求索的大模型 API 进行翻译和分析，并将结果返回到你的设备。深度求索已取得国内《生成式人工智能服务管理暂行办法》备案，数据全程在中国大陆境内流转。我们的服务器不长期存储具体内容，仅保留按月计费所需的 token 使用量。
+                </li>
+                <li><strong className="text-ink">你自选的大模型服务商</strong>（关闭 iOS 端「whatSub 托管 AI」，或使用桌面端 / 浏览器插件时）——由你直接配置 API Key 与 Base URL，请求由你的设备直接发往你所选择的服务商，不经过 whatSub 的服务器。</li>
                 <li><strong className="text-ink">QQ 邮箱（SMTP）</strong>——发送授权码邮件。</li>
                 <li><strong className="text-ink">阿里云（北京）</strong>——我们的服务器托管商。</li>
               </ul>
+              <p className="mt-4 text-sm text-[--ink-soft]">
+                关于上述第三方服务对你数据的保护，请阅读各自的隐私政策。我们已确认深度求索向我们承诺与本政策同等的保护标准；其他由你自配置 API Key 的服务商由你直接与之建立服务关系，请自行核对其条款。
+              </p>
             </Section>
 
             <Section title="五、数据保留期">
