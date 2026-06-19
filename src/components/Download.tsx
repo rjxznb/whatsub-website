@@ -1,7 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import { ArrowDownToLine, Github, Puzzle } from 'lucide-react';
+import { ArrowDownToLine, Chrome, Github, Puzzle } from 'lucide-react';
 import { AppleLogo, WindowsLogo } from '@/components/Icons';
 import { useLatestVersion } from '@/hooks/useLatestVersion';
 import { useReveal } from '@/hooks/useReveal';
@@ -24,6 +23,35 @@ const PLATFORMS = [
     href: '/download/mac',
     Icon: AppleLogo,
     githubAssetSuffix: 'aarch64.dmg',
+  },
+];
+
+// "现已支持" — the other endpoints whatSub already runs on outside the
+// desktop client. Each card is one click → external store. Used to be a
+// single "配套浏览器插件" tile with two store buttons; replaced with
+// this 3-card grid once iOS shipped (2026-06-10) so the section now
+// communicates "desktop + iOS + two browser stores, all live" instead
+// of just "browser extension as an add-on". Card icons mix custom
+// AppleLogo with lucide Chrome / Puzzle so the row carries some visual
+// variety while staying consistent in size.
+const NOW_AVAILABLE = [
+  {
+    label: 'App Store',
+    sub: 'iPhone & iPad',
+    Icon: AppleLogo,
+    href: LINKS.iosAppStore,
+  },
+  {
+    label: 'Edge 加载项',
+    sub: '浏览器扩展',
+    Icon: Puzzle,
+    href: LINKS.edgeAddonStore,
+  },
+  {
+    label: 'Chrome 应用商店',
+    sub: '浏览器扩展',
+    Icon: Chrome,
+    href: LINKS.chromeAddonStore,
   },
 ];
 
@@ -100,54 +128,37 @@ export function Download() {
           ))}
         </div>
 
-        {/* Companion browser extension — secondary download below the */}
-        {/* two desktop-client tiles. Primary CTA goes through the license */}
-        {/* backend (/download/plugin 302s to the latest GitHub release zip */}
-        {/* via the GitHub API). Backup link points directly at the GitHub */}
-        {/* /releases/latest page so users can recover even if both the */}
-        {/* backend AND the GitHub API are unreachable. */}
-        <div className="reveal reveal-delay-3 mt-4 flex flex-col rounded-xl border border-[--hairline] bg-[--bg-elev] p-8 md:flex-row md:items-center md:justify-between">
-          <div className="mb-6 flex items-start gap-3 md:mb-0">
-            <Puzzle className="mt-0.5 h-7 w-7 text-[--ink-soft]" strokeWidth={1.5} />
-            <div>
-              <div className="flex items-baseline gap-2">
-                <h3 className="text-2xl font-bold leading-tight text-ink">
-                  配套浏览器插件
-                </h3>
-                {/* Free-to-use signal — the plugin is gratis; only the */}
-                {/* desktop client + corpus access are license-gated. */}
-                <span className="rounded-full bg-accent/15 px-2 py-0.5 text-xs font-semibold text-accent">
-                  免费
-                </span>
-              </div>
-              <p className="mt-1 text-sm text-[--ink-muted]">
-                完全免费 · Chrome / Edge 扩展 · YouTube 双语字幕 + 划词收藏,自动同步进多端语料库
-              </p>
-              <div className="mt-2 flex flex-wrap items-center gap-4">
-                <Link
-                  href="/plugin"
-                  className="inline-flex items-center gap-1.5 text-xs font-medium text-accent transition-colors hover:text-ink"
-                >
-                  了解插件功能 →
-                </Link>
-                <a
-                  href={LINKS.githubPluginReleases}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-mono text-xs text-[--ink-faint] transition-colors hover:text-[--ink-muted]"
-                >
-                  <Github className="h-3.5 w-3.5" strokeWidth={1.5} /> GitHub 备用下载
-                </a>
-              </div>
-            </div>
+        {/* ── 现已支持 ── desktop client 之外的端 (iOS app + 两个浏览器
+            扩展商店)。每张卡是一个外链,整张卡可点 → 对应商店。视觉
+            轻于上面的 Windows / macOS 主下载磁贴(更小的标题、卡内不
+            放下载按钮、只用 hover 提示可交互),让"下载 whatSub"仍是
+            section 的焦点,这里只是补充信息层。 */}
+        <div className="reveal reveal-delay-3 mt-16 border-t border-[--hairline] pt-12">
+          <h3 className="mb-2 text-lg font-semibold text-ink sm:text-xl">
+            现已支持
+          </h3>
+          <p className="mb-8 text-sm text-[--ink-muted]">
+            桌面客户端之外,这些平台也已上线 · 同邮箱登录,语料库和云端视频自动互通
+          </p>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {NOW_AVAILABLE.map((p) => (
+              <a
+                key={p.label}
+                href={p.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col items-center justify-center rounded-xl border border-[--hairline] bg-[--bg-elev] px-6 py-10 transition-all hover:-translate-y-px hover:border-white/20"
+              >
+                <p.Icon className="mb-5 h-7 w-7 text-[--ink-soft] transition-colors group-hover:text-ink" />
+                <p className="mb-1.5 text-base font-semibold text-ink">
+                  {p.label}
+                </p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[--ink-faint]">
+                  {p.sub}
+                </p>
+              </a>
+            ))}
           </div>
-          <a
-            href="/download/plugin"
-            className="inline-flex h-12 items-center justify-center gap-2.5 whitespace-nowrap rounded-lg bg-white px-6 text-sm font-semibold text-bg transition-transform hover:-translate-y-px"
-          >
-            <ArrowDownToLine className="h-4 w-4" strokeWidth={2.5} />
-            下载插件
-          </a>
         </div>
       </div>
     </section>

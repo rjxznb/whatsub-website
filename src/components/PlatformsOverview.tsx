@@ -54,7 +54,6 @@ const PLATFORMS: Platform[] = [
     bestFor: '通勤碎片时间复习',
     features: ['随身翻看个人语料库', '免 VPN 看视频 · 字幕跟读', 'iPhone / iPad（iOS 16+）'],
     cta: { label: '了解移动端', href: '/mobile' },
-    soon: true,
   },
 ];
 
@@ -88,7 +87,7 @@ const SCENARIOS: Scenario[] = [
   {
     scene: '通勤、排队等碎片时间复习',
     picks: ['移动端'],
-    why: '手机随身翻,云端同步(即将上线)',
+    why: '手机随身翻,云端同步,免 VPN 秒开',
   },
 ];
 
@@ -157,7 +156,7 @@ export function PlatformsOverview() {
             平台与集成
           </h1>
           <p className="reveal reveal-delay-1 max-w-[640px] text-[15px] leading-[1.7] text-[--ink-soft]">
-            whatSub 现有桌面客户端、浏览器插件两个入口(移动端即将上线),它们共享同一个云端语料库。下面按场景帮你选,并说明它们怎么串在一起。
+            whatSub 现有桌面客户端、浏览器插件、iOS 移动端三个入口,它们共享同一个云端语料库。下面按场景帮你选,并说明它们怎么串在一起。
           </p>
         </div>
       </header>

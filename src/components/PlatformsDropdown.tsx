@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown, Monitor, Puzzle, Smartphone, LayoutGrid, GraduationCap } from 'lucide-react';
 
@@ -18,24 +18,45 @@ const PLATFORMS: PlatformItem[] = [
   { label: '最佳实践', desc: '三端配合,把英语学透', href: '/platforms#best-practices', Icon: GraduationCap },
   { label: '桌面客户端', desc: '视频解析 · 字幕分析 · 词汇本', href: '/', Icon: Monitor },
   { label: '浏览器插件', desc: 'YouTube 双语字幕 · 划词收藏', href: '/plugin', Icon: Puzzle },
-  { label: '移动端', desc: 'iOS · 随身看 + 复习（即将上线）', href: '/mobile', Icon: Smartphone },
+  { label: '移动端', desc: 'iOS · 随身看 + 复习', href: '/mobile', Icon: Smartphone },
 ];
 
-/** Shared "平台与集成" hover dropdown used by both the homepage Nav and
- *  the /plugin page nav. Hover-open with the panel inside the same hover
- *  container so cursor travel into it doesn't dismiss it. */
+/** Shared "平台与集成" dropdown used by the homepage Nav and the
+ *  /plugin page nav. Click-toggle so it works identically on desktop
+ *  and mobile (hover-open didn't translate to touch — that was the
+ *  reason mobile previously got a flat /platforms link instead of the
+ *  full panel). Pointerdown listener attaches only while open and
+ *  closes the panel on any tap/click outside the container; Link
+ *  clicks inside the panel also close it so navigation feels right. */
 export function PlatformsDropdown() {
   const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Outside-tap to close — attached only while open so we don't pay
+  // the listener cost on every page during normal scroll/idle.
+  useEffect(() => {
+    if (!open) return;
+    const onDocPointer = (e: PointerEvent) => {
+      if (!containerRef.current?.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', onDocPointer);
+    return () => document.removeEventListener('pointerdown', onDocPointer);
+  }, [open]);
+
   return (
-    <div
-      className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
+    <div ref={containerRef} className="relative">
+      {/* Trigger button — pill-shaped ghost button on mobile (matches
+          the look of the existing /platforms ghost link it replaced),
+          plain inline text + chevron on md+ (matches the sibling nav
+          links above it in the desktop nav). */}
       <button
         type="button"
-        className="inline-flex items-center gap-1 transition-colors hover:text-ink"
+        onClick={() => setOpen((v) => !v)}
+        className="inline-flex h-9 items-center gap-1 rounded-lg border border-white/15 px-3 text-xs text-[--ink-soft] transition-colors hover:border-white/30 hover:text-ink md:h-auto md:rounded-none md:border-0 md:p-0 md:text-sm"
         aria-expanded={open}
+        aria-haspopup="menu"
       >
         平台与集成
         <ChevronDown
@@ -45,7 +66,7 @@ export function PlatformsDropdown() {
         />
       </button>
       {open && (
-        <div className="absolute right-0 top-full pt-3">
+        <div className="absolute right-0 top-full pt-3" role="menu">
           <div
             className="w-72 overflow-hidden rounded-xl border border-[--hairline] p-1.5 shadow-2xl"
             style={{
@@ -59,6 +80,8 @@ export function PlatformsDropdown() {
                 <Link
                   key={p.label}
                   href={p.href}
+                  onClick={() => setOpen(false)}
+                  role="menuitem"
                   className="flex items-start gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-white/[0.06]"
                 >
                   <p.Icon className="mt-0.5 h-4 w-4 shrink-0 text-accent" strokeWidth={2} />

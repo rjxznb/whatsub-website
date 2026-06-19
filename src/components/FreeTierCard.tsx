@@ -11,10 +11,11 @@ import { FREE_TIER } from '@/lib/constants';
  * 三处刻意区分:
  *  1. chip 用绿色 emerald 而不是 Pro 的蓝色 accent,潜意识识别"这是入门档"
  *  2. 价格大字写 "¥0",右侧附 "不订阅" 小字,跟 Pro 的月/年 toggle 形成对比
- *  3. 没有购买表单 — 替换成一行 "iOS 在 App Store 即将上线" 的状态提示
- *     (MobileShowcase 顶部已经有完整的下载/即将上线 CTA,这里不重复)
+ *  3. 没有购买表单 — 替换成一行说明 (MobileShowcase 顶部已经有完整的
+ *     App Store 下载 CTA,这里不重复一遍按钮)
  *
- * 2026-06-08。
+ * 2026-06-08. iOS 上线 App Store 后 (2026-06-10),原先的"即将上线"
+ * 状态文案改成默认体验说明,因为页面其他位置已经全面更新。
  */
 export function FreeTierCard({
   variant = 'compact',
@@ -59,9 +60,9 @@ export function FreeTierCard({
       </ul>
 
       {/* Footer — 与 Pro 卡片的 form/button 高度匹配,免费档没有购买
-          动作,占位为一段状态信息。MobileShowcase 顶部已有"App Store
-          即将上线"的状态 pill + 下载链接,这里不再放下载按钮,只用
-          一句轻提示告诉用户"这就是默认体验"。 */}
+          动作,占位为一段状态信息。MobileShowcase 顶部已有 App Store
+          下载按钮,这里不再放下载按钮,只用一句轻提示告诉用户"这就是
+          默认体验"。 */}
       <div className="rounded-lg border border-[--hairline] bg-bg/30 px-4 py-3">
         <p className="text-center text-xs text-[--ink-muted]">
           iOS 安装即生效 · 不用注册付费 · 三端同步默认开启

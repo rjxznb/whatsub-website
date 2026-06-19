@@ -4,7 +4,6 @@ import { DemoDiagonal } from '@/components/DemoDiagonal';
 import { Download } from '@/components/Download';
 import { CombinedPricing } from '@/components/CombinedPricing';
 import { FAQ } from '@/components/FAQ';
-import { ComingSoon } from '@/components/ComingSoon';
 import { Footer } from '@/components/Footer';
 
 export default function HomePage() {
@@ -22,7 +21,6 @@ export default function HomePage() {
             (promo for buyout, plan toggle for sub). */}
         <CombinedPricing />
         <FAQ />
-        <ComingSoon />
       </main>
       <Footer />
     </>

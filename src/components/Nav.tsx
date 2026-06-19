@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { PlatformsDropdown } from './PlatformsDropdown';
 
 type NavLink = { id: string; label: string };
@@ -55,7 +54,11 @@ export function Nav({ links = DEFAULT_LINKS }: { links?: NavLink[] }) {
             className="relative block h-9 w-auto mix-blend-screen"
           />
         </button>
-        <div className="flex items-center gap-7">
+        <div className="flex items-center gap-3 sm:gap-7">
+          {/* Section anchors — desktop only. On mobile the layout is
+              too tight to fit them; mobile users navigate via the
+              wordmark (back to top), the platforms dropdown, and the
+              购买授权 CTA. */}
           <ul className="hidden md:flex items-center gap-7 text-sm text-[--ink-soft]">
             {links.map((l) => (
               <li key={l.id}>
@@ -67,22 +70,13 @@ export function Nav({ links = DEFAULT_LINKS }: { links?: NavLink[] }) {
                 </button>
               </li>
             ))}
-            <li>
-              <PlatformsDropdown />
-            </li>
           </ul>
-          {/* Mobile-only 平台与集成 link. On desktop the PlatformsDropdown
-              above covers this; on mobile the dropdown + inline links are
-              hidden (md:hidden on the ul), so the only navigable thing in the
-              nav was 购买授权 → home pricing — leaving phone visitors no way
-              to find the iOS app entry. Secondary ghost-button styling so it
-              doesn't compete with the primary 购买授权 below. */}
-          <Link
-            href="/platforms"
-            className="md:hidden inline-flex h-9 items-center rounded-lg border border-white/15 px-3 text-xs text-[--ink-soft] transition-colors hover:border-white/30 hover:text-ink"
-          >
-            平台与集成
-          </Link>
+          {/* Platforms dropdown — visible on BOTH desktop and mobile so
+              phone visitors can reach the iOS app + plugin entries
+              instead of just being routed straight to /platforms. The
+              component itself adapts its trigger styling (ghost button
+              on mobile, inline text on desktop). */}
+          <PlatformsDropdown />
           <button
             type="button"
             onClick={() => scrollTo('pricing')}

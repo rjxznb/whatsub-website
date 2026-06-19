@@ -31,17 +31,25 @@ export const LINKS = {
   githubReleases: 'https://github.com/rjxznb/whatsub-releases/releases',
   jihulabReleases: 'https://jihulab.com/rjxznb-group/whatsub-release/-/releases',
 
-  // Companion browser extension — primary download path is the Edge
-  // Add-ons Store (official, one-click install for Edge users). Chrome
-  // is not yet listed; Chrome users fall back to /download/plugin on
-  // the license backend (which 302s to a .zip via JihuLab Package
-  // Registry → GitHub) and load it unpacked via chrome://extensions
-  // developer mode. The two browse-page links below are last-ditch
-  // fallbacks for when both the redirect chain AND the underlying APIs
-  // are unreachable — they land the user on a page where they can pick
-  // a .zip by hand.
+  // iOS app — App Store listing approved 2026-06-10 (CN store, app ID
+  // 6771697837). Surfaced on /mobile (hero + final CTA + nav), the
+  // homepage Download "现已支持" grid, and the platforms dropdown +
+  // /platforms overview cards. Homepage "Coming soon" teaser was
+  // dropped entirely once iOS shipped — only Mac App Store / Android
+  // remain genuinely pending, and we surface those when ready.
+  iosAppStore: 'https://apps.apple.com/cn/app/whatsub/id6771697837',
+
+  // Companion browser extension — both Edge Add-ons Store and Chrome
+  // Web Store are live (Chrome listing approved 2026-06-10). Each is a
+  // one-click install path with built-in auto-updates handled by the
+  // respective browser. The JihuLab / GitHub release URLs below stay
+  // as last-ditch fallbacks for the rare case both store frontends
+  // are unreachable (mainland CN network blips, mostly Chrome Web Store)
+  // so the user can still pick a .zip by hand.
   edgeAddonStore:
     'https://microsoftedge.microsoft.com/addons/detail/nnimcmjcjapacadannjbfdhkpklnbekj',
+  chromeAddonStore:
+    'https://chromewebstore.google.com/detail/whatsub-%E5%8F%8C%E8%AF%AD%E5%AD%97%E5%B9%95%E8%AF%AD%E6%96%99%E5%BA%93/cpakpiimpppgedidmoohddhfcpjjkjha',
   jihulabPluginPackages: 'https://jihulab.com/rjxznb/whatsub-plugin/-/packages',
   githubPluginReleases: 'https://github.com/rjxznb/whatsub-plugin/releases/latest',
 

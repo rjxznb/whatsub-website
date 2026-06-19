@@ -4,9 +4,11 @@ import { Smartphone } from 'lucide-react';
 import { AppleLogo } from '@/components/Icons';
 import { useReveal } from '@/hooks/useReveal';
 
+// iPhone & iPad shipped 2026-06-10 (App Store live, see
+// LINKS.iosAppStore) — removed from this "coming soon" list so the
+// teaser only carries items that are still genuinely pending.
 const PLATFORMS = [
   { label: 'Mac App Store', sub: 'macOS', Icon: AppleLogo },
-  { label: 'iPhone & iPad', sub: 'iOS App Store', Icon: AppleLogo },
   { label: 'Android', sub: 'Google Play', Icon: Smartphone },
 ] as const;
 
@@ -31,7 +33,7 @@ export function ComingSoon() {
           未来将支持更多平台 · <span className="text-accent">Coming soon</span>
         </h2>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="mx-auto grid max-w-[640px] grid-cols-1 gap-4 sm:grid-cols-2">
           {PLATFORMS.map((p, i) => (
             <div
               key={p.label}

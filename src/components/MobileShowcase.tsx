@@ -14,11 +14,16 @@ import {
 } from 'lucide-react';
 import { AppleLogo } from '@/components/Icons';
 import { useReveal } from '@/hooks/useReveal';
+import { LINKS } from '@/lib/constants';
 import { PlatformsDropdown } from './PlatformsDropdown';
 
-// Secondary button kept consistent with the homepage / plugin buttons. There
-// is no public download yet (App Store pending), so the hero leads with a
-// status pill instead of a primary download CTA.
+// Hero / CTA buttons — App Store is now live (2026-06-10), so the
+// primary slot is a real download link to apps.apple.com. The
+// secondary button still links to the desktop / plugin pages as a
+// cross-promo. Shape and sizing match the homepage and /plugin so a
+// reader scanning across pages perceives one button language.
+const BTN_PRIMARY =
+  'inline-flex h-12 items-center gap-2.5 rounded-lg bg-white px-7 text-sm font-semibold text-bg transition-transform hover:-translate-y-px';
 const BTN_SECONDARY =
   'inline-flex h-12 items-center gap-2.5 rounded-lg border border-[--hairline-strong] bg-white/[0.04] px-7 text-sm font-semibold text-ink transition-transform hover:-translate-y-px';
 
@@ -182,7 +187,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: '现在怎么获取？',
-    a: 'App Store 即将上线。上线前可以先用桌面客户端 + 浏览器插件，数据都会同步，等 app 上架后无缝衔接。',
+    a: '已在 App Store 上线（中国区，搜索「whatSub」或点页面顶部「App Store」按钮直达）。下载后用注册过桌面端的同一邮箱登录，云端 library 与语料库即刻同步。',
   },
 ];
 
@@ -233,10 +238,16 @@ export function MobileShowcase() {
                 <PlatformsDropdown />
               </li>
             </ul>
-            <span className="inline-flex h-9 items-center gap-2 rounded-lg bg-white/[0.06] px-4 text-sm font-medium text-[--ink-soft]">
+            <a
+              href={LINKS.iosAppStore}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-9 items-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
+              style={{ boxShadow: '0 0 0 1px rgba(59,155,255,0.4), 0 0 24px var(--accent-glow)' }}
+            >
               <AppleLogo className="h-4 w-4" />
-              即将上线
-            </span>
+              App Store
+            </a>
           </div>
         </div>
       </nav>
@@ -265,17 +276,22 @@ export function MobileShowcase() {
           </p>
 
           <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3">
-            <span className="inline-flex h-12 items-center gap-2.5 rounded-lg bg-white/[0.06] px-7 text-sm font-medium text-[--ink-soft]">
+            <a
+              href={LINKS.iosAppStore}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={BTN_PRIMARY}
+            >
               <AppleLogo className="h-[18px] w-[18px]" />
-              App Store 即将上线
-            </span>
+              App Store 下载
+            </a>
             <Link href="/" className={BTN_SECONDARY}>
-              先用桌面客户端
+              看桌面客户端
             </Link>
           </div>
 
           <p className="reveal reveal-delay-3 mx-auto mt-6 max-w-[520px] text-xs text-[--ink-faint]">
-            上线前可先用桌面客户端 + 浏览器插件，数据互通，app 上架后无缝衔接。
+            同一邮箱登录桌面 / 浏览器插件 / iOS 三端,语料库和云端视频自动同步。
           </p>
         </div>
       </section>
@@ -395,13 +411,18 @@ export function MobileShowcase() {
             随身的那一块屏幕，也交给 whatSub
           </h2>
           <p className="reveal reveal-delay-1 mx-auto mb-9 max-w-[480px] text-[--ink-soft]">
-            iOS app 即将上线 App Store。现在先用桌面客户端 + 浏览器插件攒内容，上架后同邮箱登录即可同步。
+            同一个邮箱在桌面 / 浏览器插件 / iOS 三端登录，云端视频和语料库自动同步——通勤、睡前、排队的碎片时间也能接着学。
           </p>
           <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3">
-            <span className="inline-flex h-12 items-center gap-2.5 rounded-lg bg-white/[0.06] px-7 text-sm font-medium text-[--ink-soft]">
+            <a
+              href={LINKS.iosAppStore}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={BTN_PRIMARY}
+            >
               <AppleLogo className="h-[18px] w-[18px]" />
-              App Store 即将上线
-            </span>
+              App Store 下载
+            </a>
             <Link href="/plugin" className={BTN_SECONDARY}>
               了解浏览器插件
             </Link>

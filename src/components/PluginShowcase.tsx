@@ -9,22 +9,20 @@ import {
   Download as DownloadIcon,
   ChevronDown,
   KeyRound,
-  Github,
-  Terminal,
 } from 'lucide-react';
 import { useReveal } from '@/hooks/useReveal';
 import { LINKS } from '@/lib/constants';
 import { PlatformsDropdown } from './PlatformsDropdown';
 
-// Primary install entry — Edge Add-ons Store, live. Chrome Web Store
-// listing is pending review, so the Chrome slot in the install CTA is
-// presented as a "即将推出" non-interactive badge (visible signal that
-// it's planned but not yet here). Chrome users who want it NOW are
-// served by a dedicated "ChromeManualInstall" section below the Hero —
-// .zip download + 3-step developer-mode load — so the manual path has
-// its own breathing room instead of crowding the Edge CTA.
-const PLUGIN_DOWNLOAD = LINKS.edgeAddonStore;
-const CHROME_MANUAL_ZIP = '/download/plugin';
+// Install entries — both stores live as of 2026-06-10. Edge and Chrome
+// CTAs sit side-by-side in nav + Hero, both as full-strength buttons
+// (no more "Soon" badge on Chrome). Each opens in a new tab since
+// they're external store pages. The previous "Chrome manual install"
+// fallback section below the Hero was removed once Chrome shipped;
+// `/download/plugin` is still exposed by the license backend if it's
+// ever needed again, but the website no longer surfaces it.
+const EDGE_STORE_URL = LINKS.edgeAddonStore;
+const CHROME_STORE_URL = LINKS.chromeAddonStore;
 
 // Hero / CTA buttons — kept identical to the homepage (HeroSlim) buttons so
 // both pages share one button component: white primary + outlined secondary.
@@ -148,7 +146,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: '怎么更新到新版？',
-    a: 'Edge 用户已经可以从 Edge 加载项一键安装，新版本由浏览器自动更新，无需任何手动操作。Chrome 应用商店版本即将推出；在那之前走临时手动安装的 Chrome 用户，下次更新需要重新下载新版 .zip 并替换原解压目录后再次加载。',
+    a: 'Edge 加载项和 Chrome 网上应用店均已上架。无论从哪个商店安装，新版本由所在浏览器自动更新，无需任何手动操作。',
   },
   {
     q: '收藏的词存在哪？能删吗？',
@@ -161,8 +159,8 @@ const SETUP_STEPS = [
     title: '从商店安装',
     lines: [
       'Edge 用户：点页面顶部「Edge」按钮跳转 Edge 加载项 whatSub 详情页 → 点「获取」→ 弹窗确认「添加扩展」。',
-      'Chrome 用户：Chrome 应用商店版本即将推出。在那之前可走「下载 .zip + 开发者模式」临时安装路径——详见上方「给 Chrome 用户的临时安装方案」区域。',
-      '装好后浏览器工具栏出现 whatsub 图标即可；Edge 版后续由商店自动更新，无需手动操作。',
+      'Chrome 用户：点页面顶部「Chrome」按钮跳转 Chrome 网上应用店 whatSub 详情页 → 点「添加至 Chrome」→ 弹窗确认「添加扩展程序」。',
+      '装好后浏览器工具栏出现 whatsub 图标即可；新版本由所在浏览器自动更新，无需手动操作。',
     ],
   },
   {
@@ -264,19 +262,17 @@ export function PluginShowcase() {
                 md+ it slots back into the nav-link row as inline text
                 + chevron (component handles both via responsive class). */}
             <PlatformsDropdown />
-            {/* Compact nav CTA cluster — Edge is the live install path
-                (accent button, clickable). Chrome is a "Soon" badge —
-                non-interactive span, not a link, so users don't expect
-                a working store install yet. Chrome users who want a
-                path NOW scroll to the manual-install section below.
-                Chrome chip is hidden on mobile to keep the bar from
-                overflowing (logo + dropdown + Edge button + chip all
-                in one row won't fit on a 375px screen) — the Hero's
-                CTA cluster shows the same "Chrome 即将推出" treatment
-                a viewport down, so nothing is lost. */}
+            {/* Compact nav CTA cluster — both Edge and Chrome live as
+                of 2026-06-10, each opens its respective store in a new
+                tab. Edge keeps the accent primary slot (still the more
+                reliable path for mainland CN visitors since Chrome Web
+                Store can be flaky there). Chrome stays hidden on
+                mobile (md:inline-flex) so the nav bar doesn't overflow
+                on a 375px screen — the Hero a viewport down carries
+                both buttons in full size. */}
             <div className="flex items-center gap-2">
               <a
-                href={PLUGIN_DOWNLOAD}
+                href={EDGE_STORE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-accent px-3.5 text-sm font-semibold text-white transition-transform hover:scale-[1.02]"
@@ -285,16 +281,15 @@ export function PluginShowcase() {
                 <DownloadIcon className="h-4 w-4" strokeWidth={2.5} />
                 Edge
               </a>
-              <span
-                aria-disabled="true"
-                title="Chrome 应用商店版本即将推出"
-                className="hidden md:inline-flex h-9 cursor-not-allowed items-center gap-1.5 rounded-lg border border-[--hairline] bg-white/[0.02] px-3 text-sm font-semibold text-[--ink-muted]"
+              <a
+                href={CHROME_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:inline-flex h-9 items-center gap-1.5 rounded-lg border border-[--hairline-strong] bg-white/[0.04] px-3.5 text-sm font-semibold text-ink transition-transform hover:scale-[1.02]"
               >
+                <DownloadIcon className="h-4 w-4" strokeWidth={2} />
                 Chrome
-                <span className="rounded-full bg-white/[0.06] px-1.5 py-px font-mono text-[9px] uppercase tracking-wider text-[--ink-faint]">
-                  Soon
-                </span>
-              </span>
+              </a>
             </div>
           </div>
         </div>
@@ -325,7 +320,7 @@ export function PluginShowcase() {
 
           <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3">
             <a
-              href={PLUGIN_DOWNLOAD}
+              href={EDGE_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
               className={BTN_PRIMARY}
@@ -333,30 +328,16 @@ export function PluginShowcase() {
               <DownloadIcon className="h-4 w-4" strokeWidth={2} />
               Edge 加载项
             </a>
-            {/* Chrome Web Store version is in review — render as a
-                disabled-looking informational chip, not a button, so
-                buyer expectations match reality. Manual install lives
-                in the dedicated section right below. */}
-            <span
-              aria-disabled="true"
-              className="inline-flex h-12 cursor-not-allowed items-center gap-2.5 rounded-lg border border-[--hairline] bg-white/[0.02] px-6 text-sm font-semibold text-[--ink-muted]"
-            >
-              Chrome
-              <span className="rounded-full bg-white/[0.06] px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[--ink-faint]">
-                即将推出
-              </span>
-            </span>
-          </div>
-
-          <p className="reveal reveal-delay-3 mt-5 text-xs text-[--ink-faint]">
-            Chrome 用户想现在就用?
             <a
-              href="#chrome-manual"
-              className="ml-1 text-accent underline-offset-2 transition-colors hover:underline"
+              href={CHROME_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={BTN_SECONDARY}
             >
-              手动安装 →
+              <DownloadIcon className="h-4 w-4" strokeWidth={2} />
+              Chrome 应用商店
             </a>
-          </p>
+          </div>
         </div>
       </section>
 
@@ -466,76 +447,6 @@ export function PluginShowcase() {
                 <p className="text-sm leading-relaxed text-[--ink-muted]">{s.body}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Chrome manual-install bridge ──
-          Chrome Web Store listing is pending. Sits AFTER the Scenarios
-          section (so the main install ask + feature walkthrough + use
-          cases land first) but BEFORE the FAQ, so Chrome users who got
-          excited by the feature gallery still have an unambiguous path
-          to install RIGHT NOW: download the .zip, flip on developer
-          mode, load unpacked. Hero has an inline "手动安装 →" anchor
-          that scroll-snaps the user here. */}
-      <section id="chrome-manual" className="scroll-mt-20 px-6 pb-24 sm:px-10 sm:pb-28 lg:px-16">
-        <div className="mx-auto max-w-[820px]">
-          <div className="reveal rounded-2xl border border-[--hairline] bg-[--bg-elev] p-7 sm:p-9">
-            <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <Terminal className="h-5 w-5 text-[--ink-soft]" strokeWidth={1.75} />
-              <h3 className="font-sans text-xl font-medium text-ink sm:text-2xl">
-                给 Chrome 用户的临时安装方案
-              </h3>
-              <span className="rounded-full bg-white/[0.06] px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[--ink-faint]">
-                手动安装
-              </span>
-            </div>
-            <p className="mb-6 text-sm leading-relaxed text-[--ink-soft]">
-              Chrome 应用商店版本审核中、即将上架。在那之前,Chrome 用户可以走「下载 .zip + 开发者模式加载」的临时路径,装好后用法和商店版完全一致——区别只有后续更新需手动替换为新版 .zip。
-            </p>
-            <ol className="mb-7 space-y-3 text-sm leading-relaxed text-[--ink-soft]">
-              <li className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/[0.06] font-mono text-[10px] text-[--ink-soft]">
-                  1
-                </span>
-                <span>点下方「下载 .zip」拿到扩展包,解压到任意目录。</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/[0.06] font-mono text-[10px] text-[--ink-soft]">
-                  2
-                </span>
-                <span>
-                  地址栏输入{' '}
-                  <code className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono text-xs text-ink">
-                    chrome://extensions
-                  </code>
-                  ,打开右上角「开发者模式」开关。
-                </span>
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/[0.06] font-mono text-[10px] text-[--ink-soft]">
-                  3
-                </span>
-                <span>点左上角「加载已解压的扩展程序」选中解压后的目录,工具栏出现 whatsub 图标即可。</span>
-              </li>
-            </ol>
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-              <a
-                href={CHROME_MANUAL_ZIP}
-                className="inline-flex h-11 items-center gap-2 rounded-lg bg-white px-5 text-sm font-semibold text-bg transition-transform hover:-translate-y-px"
-              >
-                <DownloadIcon className="h-4 w-4" strokeWidth={2.5} />
-                下载 .zip
-              </a>
-              <a
-                href={LINKS.githubPluginReleases}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-mono text-xs text-[--ink-faint] transition-colors hover:text-[--ink-muted]"
-              >
-                <Github className="h-3.5 w-3.5" strokeWidth={1.5} /> GitHub 备用下载
-              </a>
-            </div>
           </div>
         </div>
       </section>
