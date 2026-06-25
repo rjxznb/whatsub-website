@@ -35,12 +35,15 @@ client-website/
 ├── .gitignore                  # node_modules/ .next/ out/ .env* *.log *.tsbuildinfo
 ├── public/
 │   ├── fonts/Caveat-{Bold,Medium}.woff2     # byte-copied from client/public/fonts/ — only used by HeroSlim
-│   ├── favicon.ico                          # copied from client/src-tauri/icons/icon.ico
-│   ├── whatsub-icon.png                     # 256×256 square app icon — copied from client/src-tauri/icons/128x128@2x.png. Currently unused in the page (nav uses wordmark) but kept as the canonical square asset (favicon, OG fallback, future use)
-│   └── whatsub-wordmark.png                 # ~3:1 wide handwritten "whatSub" wordmark with black background. Used as the nav logo. Black bg blends out via mix-blend-mode: screen so only the white "what" + blue "Sub" letterforms show on top of nav backdrop
+│   ├── videos/{m1..m4,p1..p3,part1..part3}.{mp4,jpg}  # demo clips for DemoDiagonal (homepage) + MobileShowcase (/mobile) + PluginShowcase (/plugin). ~14 MB total, all tracked in git
+│   ├── whatsub-icon.png                     # 256×256 square app icon — copied from client/src-tauri/icons/128x128@2x.png. Currently unused in the page (nav uses wordmark) but kept as the canonical square asset (OG fallback, future use)
+│   ├── whatsub-wordmark.png                 # ~3:1 wide handwritten "whatSub" wordmark with black background. Used as the nav logo. Black bg blends out via mix-blend-mode: screen so only the white "what" + blue "Sub" letterforms show on top of nav backdrop
+│   └── og.png                               # OpenGraph share preview image
 └── src/
     ├── app/
-    │   ├── layout.tsx          # <html lang="zh"> + Caveat preload + @fontsource/jetbrains-mono import
+    │   ├── favicon.ico         # 32×32 site favicon — Next 14 auto-detects this colocated at src/app/ (no <link> tag in layout.tsx needed)
+    │   ├── icon.png            # 512×512 high-res app icon — Next 14 auto-detects and emits PWA-style <link rel="icon" type="image/png"> tags
+    │   ├── layout.tsx          # <html lang="zh"> + Caveat preload + @fontsource/jetbrains-mono import. No explicit `icons` metadata block — relies on the auto-detected favicon.ico + icon.png above
     │   ├── globals.css         # @font-face Caveat + brand CSS vars + body vignette + .reveal/.visible classes
     │   ├── page.tsx            # Renders Nav + HeroSlim + DemoDiagonal + Download + CombinedPricing + FAQ + Footer. ComingSoon was dropped 2026-06-10 once iOS shipped — only Mac App Store + Android remained genuinely pending, not worth a section on its own
     │   ├── mobile/
