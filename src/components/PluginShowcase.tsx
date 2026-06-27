@@ -218,7 +218,15 @@ const NAV_LINKS = [
   { id: 'faq', label: '常见问题' },
 ];
 
-export function PluginShowcase() {
+// Hero prop — when provided, swaps the default Hero with the passed
+// component. /plugin/v1 uses this to preview HeroPluginBenefitLed
+// alongside the rest of the showcase. Default `/plugin` keeps the
+// inline default below.
+export function PluginShowcase({
+  Hero,
+}: {
+  Hero?: React.ComponentType;
+} = {}) {
   const ref = useReveal<HTMLDivElement>();
 
   const scrollTo = (id: string) =>
@@ -295,51 +303,57 @@ export function PluginShowcase() {
         </div>
       </nav>
 
-      {/* ── Hero (signature kept identical to the homepage; buttons follow the new system) ── */}
-      <section className="relative overflow-hidden px-6 pt-32 pb-20 sm:px-10 lg:px-16 lg:pt-44 lg:pb-28">
-        <div className="mx-auto max-w-[1100px] text-center">
-          <h1
-            className="reveal mb-12 font-display font-bold leading-none tracking-[-0.01em] text-ink"
-            style={{ fontSize: 'clamp(48px, 13vw, 180px)' }}
-          >
-            hey,&nbsp;what
-            <span className="text-ink">’</span>
-            <span className="inline-block text-accent cursor-pointer transition-transform duration-300 ease-out [text-shadow:0_0_32px_var(--accent-glow)] hover:scale-125 hover:[text-shadow:0_0_24px_rgba(255,255,255,0.85),0_0_48px_rgba(255,255,255,0.4)]">
-              Sub
-            </span>
-            ?
-          </h1>
-
-          <p className="reveal reveal-delay-1 mx-auto mb-4 max-w-[640px] text-[clamp(16px,2vw,22px)] leading-[1.55] text-[--ink-soft]">
-            让一句字幕，慢慢成为你的英语
-          </p>
-
-          <p className="reveal reveal-delay-1 mx-auto mb-10 max-w-[620px] text-[clamp(13px,1.5vw,16px)] leading-[1.6] text-[--ink-muted]">
-            浏览器插件版 · YouTube 双语字幕 + AI 重点标黄 + 跨网页划词收藏，自动同步进你的私人语料库
-          </p>
-
-          <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href={EDGE_STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={BTN_PRIMARY}
+      {/* ── Hero — default (signature) shown when no Hero prop is
+          provided. /plugin/v1 passes HeroPluginBenefitLed which renders
+          in this slot instead. ── */}
+      {Hero ? (
+        <Hero />
+      ) : (
+        <section className="relative overflow-hidden px-6 pt-32 pb-20 sm:px-10 lg:px-16 lg:pt-44 lg:pb-28">
+          <div className="mx-auto max-w-[1100px] text-center">
+            <h1
+              className="reveal mb-12 font-display font-bold leading-none tracking-[-0.01em] text-ink"
+              style={{ fontSize: 'clamp(48px, 13vw, 180px)' }}
             >
-              <DownloadIcon className="h-4 w-4" strokeWidth={2} />
-              Edge 加载项
-            </a>
-            <a
-              href={CHROME_STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={BTN_SECONDARY}
-            >
-              <DownloadIcon className="h-4 w-4" strokeWidth={2} />
-              Chrome 应用商店
-            </a>
+              hey,&nbsp;what
+              <span className="text-ink">’</span>
+              <span className="inline-block text-accent cursor-pointer transition-transform duration-300 ease-out [text-shadow:0_0_32px_var(--accent-glow)] hover:scale-125 hover:[text-shadow:0_0_24px_rgba(255,255,255,0.85),0_0_48px_rgba(255,255,255,0.4)]">
+                Sub
+              </span>
+              ?
+            </h1>
+
+            <p className="reveal reveal-delay-1 mx-auto mb-4 max-w-[640px] text-[clamp(16px,2vw,22px)] leading-[1.55] text-[--ink-soft]">
+              让一句字幕，慢慢成为你的英语
+            </p>
+
+            <p className="reveal reveal-delay-1 mx-auto mb-10 max-w-[620px] text-[clamp(13px,1.5vw,16px)] leading-[1.6] text-[--ink-muted]">
+              浏览器插件版 · YouTube 双语字幕 + AI 重点标黄 + 跨网页划词收藏，自动同步进你的私人语料库
+            </p>
+
+            <div className="reveal reveal-delay-2 flex flex-wrap items-center justify-center gap-3">
+              <a
+                href={EDGE_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={BTN_PRIMARY}
+              >
+                <DownloadIcon className="h-4 w-4" strokeWidth={2} />
+                Edge 加载项
+              </a>
+              <a
+                href={CHROME_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={BTN_SECONDARY}
+              >
+                <DownloadIcon className="h-4 w-4" strokeWidth={2} />
+                Chrome 应用商店
+              </a>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── Feature rows (alternating) ── */}
       <section id="features" className="scroll-mt-20 px-6 py-10 sm:px-10 lg:px-16">

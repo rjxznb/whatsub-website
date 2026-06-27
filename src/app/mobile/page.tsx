@@ -1,6 +1,8 @@
 import { MobileShowcase } from '@/components/MobileShowcase';
+import { HeroMobileBenefitLed } from '@/components/HeroMobileBenefitLed';
 import { FreeTierCard } from '@/components/FreeTierCard';
 import { ProSubscriptionCard } from '@/components/ProSubscriptionCard';
+import { BrandSignOff } from '@/components/BrandSignOff';
 import { Footer } from '@/components/Footer';
 
 export const metadata = {
@@ -22,7 +24,11 @@ export default function MobilePage() {
   return (
     <>
       <main>
-        <MobileShowcase />
+        {/* 2026-06-27: MobileShowcase now renders HeroMobileBenefitLed
+            (pain-question + 一键解析 / 跨端同步 framing + App Store
+            free download badge). Caveat signature moves to bottom via
+            BrandSignOff, same as /. */}
+        <MobileShowcase Hero={HeroMobileBenefitLed} />
 
         <section
           id="pricing"
@@ -73,6 +79,8 @@ export default function MobilePage() {
             </div>
           </div>
         </section>
+
+        <BrandSignOff />
       </main>
       <Footer />
     </>
