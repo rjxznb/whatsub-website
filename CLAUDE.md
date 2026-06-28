@@ -36,7 +36,7 @@ client-website/
 ├── public/
 │   ├── fonts/Caveat-{Bold,Medium}.woff2     # byte-copied from client/public/fonts/ — used by BrandSignOff (page-bottom Caveat signature on /, /plugin, /mobile)
 │   ├── videos/{m1..m4,p1..p3,part1..part3}.{mp4,jpg}  # demo clips for DemoDiagonal (homepage) + MobileShowcase (/mobile) + PluginShowcase (/plugin). ~14 MB total, all tracked in git
-│   ├── screenshots/app/screen-{1..7}.jpg    # 7 macOS desktop-client screenshots used by SubtitleMockup carousel on the home Hero. ~1.6 MB total. Order is product-flow (download → AI 精讲 → 划词 → 云端同步 → 角色扮演 → AI 助手 → 内置工具)
+│   ├── screenshots/app/screen-{1..7}.jpg + screen-8.png  # 8 macOS desktop-client screenshots used by SubtitleMockup carousel on the home Hero. ~2.3 MB total. Carousel order is product-flow (download → AI 精讲 → 划词 → 云端同步 → 角色扮演 → 实时语音对话 → AI 助手 → 内置工具) but file numbering is creation order (file 8 inserted at carousel position 6)
 │   ├── whatsub-icon.png                     # 256×256 square app icon — copied from client/src-tauri/icons/128x128@2x.png. Currently unused in the page (nav uses wordmark) but kept as the canonical square asset (OG fallback, future use)
 │   ├── whatsub-wordmark.png                 # ~3:1 wide handwritten "whatSub" wordmark with black background. Used as the nav logo. Black bg blends out via mix-blend-mode: screen so only the white "what" + blue "Sub" letterforms show on top of nav backdrop
 │   └── og.png                               # OpenGraph share preview image

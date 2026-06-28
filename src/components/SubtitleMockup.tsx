@@ -52,6 +52,11 @@ const SCREENSHOTS: Slide[] = [
     alt: '角色扮演,替换视频中的人物与 AI 进行对话练习',
   },
   {
+    src: '/screenshots/app/screen-8.png',
+    label: '和 AI 实时语音对话',
+    alt: '和大模型进行实时语音对话,边看视频边练口语',
+  },
+  {
     src: '/screenshots/app/screen-6.jpg',
     label: 'AI 助手自动调工具',
     alt: 'AI 助手可以自动调用工具,如搜索 YouTube 视频并下载',
